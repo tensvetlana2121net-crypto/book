@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5 класс — Домашние задания</title>
+<title>Домашние задания — школа</title>
 <style>
   :root{
     --bg:#f4f7fb; --card:#fff; --primary:#4a6cf7; --primary-d:#3a55c4;
@@ -40,7 +40,7 @@
   .avatar{
     width:36px;height:36px;border-radius:50%;background:var(--primary);
     color:#fff;display:flex;align-items:center;justify-content:center;
-    font-weight:600;margin-right:10px;
+    font-weight:600;margin-right:10px;flex-shrink:0;
   }
   .student-info{display:flex;align-items:center;flex:1;}
   .grade-badge{
@@ -50,6 +50,7 @@
   .grade-4{background:#dbeafe;color:#1e40af;}
   .grade-3{background:#fef3c7;color:#92400e;}
   .grade-2{background:#fee2e2;color:#991b1b;}
+  .grade-n{background:#ede9fe;color:#5b21b6;}
   .grade-none{background:#f3f4f6;color:#6b7280;}
 
   input[type=text],textarea,select{
@@ -66,6 +67,8 @@
   .btn-sec:hover{background:#dbe4ff;}
   .btn-ok{background:var(--ok);}
   .btn-ok:hover{background:#16a34a;}
+  .btn-danger{background:var(--err);}
+  .btn-danger:hover{background:#b91c1c;}
   .btn-sm{padding:6px 12px;font-size:13px;}
 
   .file-chip{
@@ -76,17 +79,24 @@
   .file-chip a{color:inherit;text-decoration:none;font-weight:600;}
   .file-chip a:hover{text-decoration:underline;}
 
-  .stickers{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;}
+  .stickers{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0;}
   .sticker{
-    font-size:26px;cursor:pointer;padding:4px 8px;border-radius:10px;
-    transition:.15s;user-select:none;
+    font-size:24px;cursor:pointer;padding:4px 6px;border-radius:10px;
+    transition:.15s;user-select:none;line-height:1;
   }
-  .sticker:hover{background:#f3f4f6;transform:scale(1.15);}
+  .sticker:hover{background:#f3f4f6;transform:scale(1.2);}
   .sticker.selected{background:#eef2ff;box-shadow:0 0 0 2px var(--primary);}
 
-  .progress{
-    height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin-top:8px;
+  .sticker-pack-tabs{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap;}
+  .sticker-pack-tabs button{
+    font-size:12px;padding:4px 10px;border-radius:8px;
+    border:1px solid var(--border);background:#fff;cursor:pointer;
   }
+  .sticker-pack-tabs button.active{
+    background:var(--primary);color:#fff;border-color:var(--primary);
+  }
+
+  .progress{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin-top:8px;}
   .progress-bar{height:100%;background:var(--primary);width:0;transition:.3s;}
 
   .toast{
@@ -109,15 +119,112 @@
   .muted{color:var(--muted);font-size:13px;}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
   .hidden{display:none!important;}
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;
+    display:flex;align-items:center;justify-content:center;padding:16px;
+  }
+  .modal{
+    background:#fff;border-radius:var(--radius);padding:24px;
+    max-width:560px;width:100%;max-height:90vh;overflow-y:auto;
+    position:relative;
+  }
+  .modal h3{margin-bottom:14px;}
+  .close-btn{
+    position:absolute;top:12px;right:14px;background:none;border:none;
+    font-size:22px;cursor:pointer;color:var(--muted);
+  }
+
+  .class-select{
+    padding:10px 14px;border-radius:10px;border:1px solid var(--border);
+    background:#fff;font-weight:500;cursor:pointer;margin-bottom:12px;
+  }
+
+  table.journal{width:100%;border-collapse:collapse;font-size:13px;}
+  table.journal th,table.journal td{border:1px solid var(--border);padding:6px 8px;text-align:center;}
+  table.journal th{background:#f9fafb;font-weight:600;}
+  table.journal td.name{text-align:left;font-weight:500;}
+  table.journal td.clickable{cursor:pointer;transition:.15s;}
+  table.journal td.clickable:hover{background:#eef2ff;}
+  .scroll-x{overflow-x:auto;}
+
+  .excel-btn{background:#16a34a;}
+  .excel-btn:hover{background:#15803d;}
+
+  .grade-buttons{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;}
+  .grade-buttons button{
+    width:44px;height:44px;border-radius:10px;border:2px solid var(--border);
+    background:#fff;font-size:18px;font-weight:700;cursor:pointer;transition:.15s;
+  }
+  .grade-buttons button:hover{transform:scale(1.08);}
+  .grade-buttons button.selected{border-color:var(--primary);background:#eef2ff;}
+  .grade-buttons button[data-grade="5"]{color:#166534;}
+  .grade-buttons button[data-grade="4"]{color:#1e40af;}
+  .grade-buttons button[data-grade="3"]{color:#92400e;}
+  .grade-buttons button[data-grade="2"]{color:#991b1b;}
+  .grade-buttons button[data-grade="Н"]{color:#5b21b6;font-size:15px;}
+
+  /* --- Стили для вкладки Классы --- */
+  .create-class-form{
+    display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;
+    background:#f9fafb;padding:16px;border-radius:12px;margin-bottom:20px;
+    border:1px dashed var(--border);
+  }
+  .create-class-form input{
+    flex:1;min-width:220px;margin:0;
+  }
+  .create-class-form button{
+    margin:0;white-space:nowrap;
+  }
+
+  .class-card{
+    border:1px solid var(--border);border-radius:12px;
+    padding:16px;margin-bottom:14px;background:#fff;
+  }
+  .class-header{
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:10px;margin-bottom:10px;
+  }
+  .class-title{
+    font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px;
+  }
+  .class-title .count{
+    font-size:12px;font-weight:500;color:var(--muted);
+    background:#f3f4f6;padding:2px 10px;border-radius:20px;
+  }
+  .add-student-form{
+    display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;
+    margin-bottom:12px;
+  }
+  .add-student-form input{
+    flex:1;min-width:180px;margin:0;
+  }
+  .add-student-form button{margin:0;white-space:nowrap;}
+
+  .student-line{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 12px;border-radius:10px;background:#f9fafb;
+    margin-bottom:6px;
+  }
+  .student-line .avatar{margin-right:12px;}
+  .student-line .name{
+    flex:1;font-weight:500;
+  }
+  .student-line .actions{
+    display:flex;gap:6px;
+  }
+  .empty-hint{
+    text-align:center;color:var(--muted);padding:20px;font-size:14px;
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>📚 5 «А» — Домашние задания</h1>
+  <h1>📚 Домашние задания — школа</h1>
   <div class="row">
     <span id="cloudStatus" class="muted" style="color:#fff;opacity:.85">☁️ Проверка Яндекс.Диска…</span>
-    <button class="btn btn-sec btn-sm" onclick="openTokenHelp()">🔑 Токен</button>
+    <button class="btn btn-sec btn-sm" onclick="openTokenModal()">🔑 Токен</button>
   </div>
 </header>
 
@@ -125,12 +232,15 @@
   <button class="tab active" onclick="switchTab('teacher', this)">👩‍🏫 Учитель</button>
   <button class="tab" onclick="switchTab('student', this)">🧑‍🎓 Ученик</button>
   <button class="tab" onclick="switchTab('journal', this)">📊 Журнал</button>
+  <button class="tab" onclick="switchTab('classes', this)">🏫 Классы</button>
+  <button class="tab" onclick="switchTab('parent', this)">👨‍👩‍👧 Родитель</button>
 </div>
 
-<!-- ========== УЧИТЕЛЬ ========== -->
+<!-- УЧИТЕЛЬ -->
 <div id="teacher" class="panel active">
   <div class="card">
     <h3>📝 Создать домашнее задание</h3>
+    <select id="hwClass" class="class-select" style="width:100%"></select>
     <input type="text" id="hwTitle" placeholder="Название (например: Математика, стр. 45 №12)">
     <input type="text" id="hwDesc" placeholder="Описание задания (текстом)">
     <label class="muted">Прикрепить материалы:</label>
@@ -141,27 +251,121 @@
     <div class="progress hidden" id="hwProgress"><div class="progress-bar"></div></div>
     <button class="btn" style="margin-top:6px" onclick="createHomework()">📤 Опубликовать задание</button>
   </div>
-
   <div class="card">
     <h3>📋 Активные задания</h3>
     <div id="hwList"><p class="muted">Пока нет заданий</p></div>
   </div>
 </div>
 
-<!-- ========== УЧЕНИК ========== -->
+<!-- УЧЕНИК -->
 <div id="student" class="panel">
   <div class="card">
     <h3>🧑‍🎓 Выбери себя</h3>
+    <select id="studentClass" class="class-select" onchange="renderStudentSelect()"></select>
     <select id="studentSelect" onchange="renderStudentView()"></select>
   </div>
   <div id="studentView"></div>
 </div>
 
-<!-- ========== ЖУРНАЛ ========== -->
+<!-- ЖУРНАЛ -->
 <div id="journal" class="panel">
   <div class="card">
-    <h3>📊 Успеваемость класса</h3>
-    <div id="journalList"></div>
+    <h3>📊 Журнал успеваемости</h3>
+    <select id="journalClass" class="class-select" onchange="renderJournal()"></select>
+    <div class="row" style="margin-bottom:12px">
+      <button class="btn excel-btn btn-sm" onclick="exportExcel()">📥 Выгрузить в Excel</button>
+    </div>
+    <div class="scroll-x" id="journalTable"></div>
+    <p class="muted" style="margin-top:10px">💡 Кликните на ячейку — откроется окно для выставления оценки.</p>
+  </div>
+</div>
+
+<!-- КЛАССЫ -->
+<div id="classes" class="panel">
+  <div class="card">
+    <h3>🏫 Классы и ученики</h3>
+
+    <!-- Форма создания класса -->
+    <div class="create-class-form">
+      <input type="text" id="newClassName" placeholder="Название класса (например: 5А)"
+             onkeydown="if(event.key==='Enter') addClass()">
+      <button type="button" class="btn" onclick="addClass()">➕ Создать класс</button>
+    </div>
+
+    <!-- Список классов -->
+    <div id="classList"></div>
+  </div>
+</div>
+
+<!-- РОДИТЕЛЬ -->
+<div id="parent" class="panel">
+  <div class="card">
+    <h3>👨‍👩‍👧 Просмотр успеваемости ребёнка</h3>
+    <select id="parentClass" class="class-select" onchange="renderParentSelect()"></select>
+    <select id="parentStudent" onchange="renderParentView()"></select>
+  </div>
+  <div id="parentView"></div>
+</div>
+
+<!-- Модалка токена -->
+<div class="modal-overlay hidden" id="tokenModal" onclick="if(event.target===this)closeTokenModal()">
+  <div class="modal">
+    <button class="close-btn" onclick="closeTokenModal()">✕</button>
+    <h3>🔑 Токен Яндекс.Диска</h3>
+    <p class="muted" style="margin-bottom:12px">
+      Вставьте OAuth-токен (начинается на <b>y0_</b>). Он сохранится в этом браузере.
+    </p>
+    <input type="text" id="tokenInput" placeholder="y0_AgAAAA..." style="font-family:monospace">
+    <div class="row">
+      <button class="btn btn-ok" onclick="saveToken()">💾 Сохранить</button>
+      <button class="btn btn-danger btn-sm" onclick="clearToken()">🗑 Удалить токен</button>
+    </div>
+    <p class="muted" style="margin-top:12px;font-size:12px">
+      Получить: https://oauth.yandex.ru/ → ваше приложение → получить OAuth-токен.
+    </p>
+  </div>
+</div>
+
+<!-- Модалка оценки -->
+<div class="modal-overlay hidden" id="gradeModal" onclick="if(event.target===this)closeGradeModal()">
+  <div class="modal">
+    <button class="close-btn" onclick="closeGradeModal()">✕</button>
+    <h3 id="gradeModalTitle">Оценка</h3>
+    <p class="muted" id="gradeModalSub" style="margin-bottom:12px"></p>
+
+    <label class="muted">Оценка:</label>
+    <div class="grade-buttons" id="gradeButtons">
+      <button data-grade="5" onclick="pickGrade('5', this)">5</button>
+      <button data-grade="4" onclick="pickGrade('4', this)">4</button>
+      <button data-grade="3" onclick="pickGrade('3', this)">3</button>
+      <button data-grade="2" onclick="pickGrade('2', this)">2</button>
+      <button data-grade="Н" onclick="pickGrade('Н', this)">Н</button>
+    </div>
+
+    <label class="muted">Стикер:</label>
+    <div class="sticker-pack-tabs" id="stickerPackTabs"></div>
+    <div class="stickers" id="stickerBox"></div>
+
+    <label class="muted">Комментарий:</label>
+    <textarea id="gradeComment" placeholder="Например: Молодец, но проверь оформление"></textarea>
+
+    <div class="row">
+      <button class="btn btn-ok" onclick="saveGrade()">💾 Сохранить</button>
+      <button class="btn btn-danger btn-sm" onclick="clearGrade()">🗑 Удалить оценку</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка подтверждения -->
+<div class="modal-overlay hidden" id="confirmModal" onclick="if(event.target===this)closeConfirm()">
+  <div class="modal">
+    <button class="close-btn" onclick="closeConfirm()">✕</button>
+    <h3 id="confirmTitle">Подтверждение</h3>
+    <p id="confirmText" style="margin-bottom:18px"></p>
+    <div class="row">
+      <button class="btn btn-danger" id="confirmYes">Да, удалить</button>
+      <button class="btn btn-sec" onclick="closeConfirm()">Отмена</button>
+    </div>
   </div>
 </div>
 
@@ -171,31 +375,37 @@
 /* ============================================================
    НАСТРОЙКИ
    ============================================================ */
-const YANDEX_TOKEN = "ВСТАВЬТЕ_СЮДА_ВАШ_OAUTH_ТОКЕН";  // ← сюда
-const CLOUD_FOLDER = "homework_app";                    // папка на Яндекс.Диске
+let YANDEX_TOKEN = localStorage.getItem("yandex_token") || "";
+const CLOUD_FOLDER = "homework_app";
 const API = "https://cloud-api.yandex.net/v1/disk";
 
-/* ============================================================
-   СПИСОК ДЕТЕЙ (можно потом заменить на данные из БД)
-   ============================================================ */
-const STUDENTS = [
-  { id: 1, name: "Иванов Иван" },
-  { id: 2, name: "Петрова Мария" },
-  { id: 3, name: "Сидоров Артём" },
-  { id: 4, name: "Кузнецова Алиса" },
-  { id: 5, name: "Смирнов Дмитрий" },
-];
-
-const STICKERS = ["👍","🔥","🌟","💪","🎉","😍","🤔","📚","✅","❤️"];
-
-/* ============================================================
-   ХРАНИЛИЩЕ (localStorage — для прототипа)
-   ============================================================ */
-let DB = JSON.parse(localStorage.getItem("hw_db") || "null") || {
-  homeworks: [],   // {id, title, desc, files:[{name,url}], link, created}
-  answers: {}      // { hwId: { studentId: {files, link, grade, comment, sticker, submitted} } }
+const STICKER_PACKS = {
+  "Учительский": ["❤️","😂","🐶","😎","👍","💋","🌸","💯","👌","😁","✌️","😜","🙈","💖","😈","😆","💔","📷","😻","🔥","💪"],
+  "Учёба":       ["✏️","📖","🎓","🧠","💡","📝","🖊","📐","🔬","🎯","📚","🏫","✍️","📔","🧮"],
+  "Эмоции":      ["😀","🤩","🥳","😇","🤓","😌","🙌","👏","🤝","😊","😅","🤗","😴","🥰"],
+  "Мотивация":   ["🚀","⭐","🌈","☀️","🍀","🏅","🎖","👑","💎","🏆","🥇","✨","🎉","🌠"]
 };
+
+/* ============================================================
+   ХРАНИЛИЩЕ
+   ============================================================ */
+const DEFAULT_DB = {
+  classes: [{ id: "5a", name: "5А", students: [] }],
+  homeworks: [],
+  answers: {}
+};
+
+let DB = JSON.parse(localStorage.getItem("hw_db") || "null") || JSON.parse(JSON.stringify(DEFAULT_DB));
+if(!DB.classes) DB = JSON.parse(JSON.stringify(DEFAULT_DB));
+if(!DB.classes.length){
+  DB.classes = [{id:"5a", name:"5А", students: []}];
+}
 const save = () => localStorage.setItem("hw_db", JSON.stringify(DB));
+const getClass = (id) => DB.classes.find(c => c.id === id);
+const getStudent = (classId, studentId) => {
+  const c = getClass(classId);
+  return c ? c.students.find(s => s.id === studentId) : null;
+};
 
 /* ============================================================
    UI-ХЕЛПЕРЫ
@@ -206,28 +416,53 @@ function switchTab(id, el){
   el.classList.add("active");
   document.getElementById(id).classList.add("active");
   if(id==="journal") renderJournal();
-  if(id==="student") renderStudentView();
+  if(id==="student") renderStudentSelect();
+  if(id==="teacher") { renderClassSelects(); renderTeacherHW(); }
+  if(id==="classes") renderClasses();
+  if(id==="parent") renderParentSelect();
 }
 function toast(msg){
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"), 2600);
 }
-function openTokenHelp(){
-  alert("1) Зайдите на https://oauth.yandex.ru/\n2) Создайте приложение (Веб-сервисы)\n3) Включите права: cloud_api:disk.read, cloud_api:disk.write, cloud_api:disk.info\n4) Получите токен по ссылке:\nhttps://oauth.yandex.ru/authorize?response_type=token&client_id=ВАШ_CLIENT_ID\n5) Вставьте токен в переменную YANDEX_TOKEN в коде.");
+function escapeHtml(s){
+  return String(s||"").replace(/[&<>"']/g, m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[m]));
 }
 
 /* ============================================================
-   ЯНДЕКС.ДИСК — API
+   ТОКЕН
    ============================================================ */
+function openTokenModal(){
+  document.getElementById("tokenInput").value = YANDEX_TOKEN || "";
+  document.getElementById("tokenModal").classList.remove("hidden");
+}
+function closeTokenModal(){ document.getElementById("tokenModal").classList.add("hidden"); }
+function saveToken(){
+  const t = document.getElementById("tokenInput").value.trim();
+  if(!t.startsWith("y0_")){ toast("Токен должен начинаться с y0_"); return; }
+  localStorage.setItem("yandex_token", t);
+  YANDEX_TOKEN = t;
+  closeTokenModal();
+  toast("✅ Токен сохранён");
+  checkCloud();
+}
+function clearToken(){
+  localStorage.removeItem("yandex_token");
+  YANDEX_TOKEN = "";
+  closeTokenModal();
+  document.getElementById("cloudStatus").textContent = "⚠️ Токен не задан";
+  toast("Токен удалён");
+}
 
-// Проверка токена и доступности диска
+/* ============================================================
+   ЯНДЕКС.ДИСК
+   ============================================================ */
 async function checkCloud(){
   const status = document.getElementById("cloudStatus");
-  if(!YANDEX_TOKEN || YANDEX_TOKEN.includes("ВСТАВЬТЕ")){
-    status.textContent = "⚠️ Токен не задан";
-    return false;
-  }
+  if(!YANDEX_TOKEN){ status.textContent = "⚠️ Токен не задан"; return false; }
   try{
     const r = await fetch(`${API}/`, { headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }});
     if(!r.ok) throw new Error("HTTP "+r.status);
@@ -236,28 +471,20 @@ async function checkCloud(){
     return true;
   }catch(e){
     status.textContent = "❌ Ошибка Яндекс.Диска";
-    console.error(e);
     return false;
   }
 }
-
-// Создать папку приложения, если её нет
 async function ensureFolder(){
   const r = await fetch(`${API}/resources?path=/${CLOUD_FOLDER}`, {
     headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }
   });
   if(r.status === 404){
     await fetch(`${API}/resources?path=/${CLOUD_FOLDER}`, {
-      method:"PUT",
-      headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }
+      method:"PUT", headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }
     });
   }
 }
-
-// Загрузка одного файла на Яндекс.Диск
-// Возвращает {name, path, publicUrl}
 async function uploadToYandexDisk(file, subfolder){
-  // 1. Запрашиваем URL для загрузки
   const remotePath = `/${CLOUD_FOLDER}/${subfolder}/${Date.now()}_${file.name}`;
   const urlResp = await fetch(
     `${API}/resources/upload?path=${encodeURIComponent(remotePath)}&overwrite=true`,
@@ -265,26 +492,15 @@ async function uploadToYandexDisk(file, subfolder){
   );
   if(!urlResp.ok) throw new Error("Не получил upload URL");
   const { href } = await urlResp.json();
-
-  // 2. PUT-загрузка самого файла
   const putResp = await fetch(href, { method:"PUT", body:file });
   if(!putResp.ok) throw new Error("Ошибка загрузки файла");
-
-  // 3. Публикуем файл
   const pubResp = await fetch(
     `${API}/resources/publish?path=${encodeURIComponent(remotePath)}`,
     { method:"PUT", headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }}
   );
   const pubData = await pubResp.json();
-
-  return {
-    name: file.name,
-    path: remotePath,
-    publicUrl: pubData.public_url || null
-  };
+  return { name: file.name, path: remotePath, publicUrl: pubData.public_url || null };
 }
-
-// Загрузка массива файлов с прогрессом
 async function uploadFiles(files, subfolder, onProgress){
   const result = [];
   for(let i=0;i<files.length;i++){
@@ -296,36 +512,173 @@ async function uploadFiles(files, subfolder, onProgress){
 }
 
 /* ============================================================
-   УЧИТЕЛЬ — создание ДЗ
+   КЛАССЫ — управление
+   ============================================================ */
+function renderClassSelects(){
+  const opts = DB.classes.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+  ["hwClass","studentClass","journalClass","parentClass"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = opts || '<option value="">— нет классов —</option>';
+  });
+}
+
+function renderClasses(){
+  const box = document.getElementById("classList");
+  if(!DB.classes.length){
+    box.innerHTML = '<div class="empty-hint">Пока нет ни одного класса.<br>Создайте первый класс выше ☝️</div>';
+    return;
+  }
+  box.innerHTML = DB.classes.map(c=>`
+    <div class="class-card">
+      <div class="class-header">
+        <div class="class-title">
+          🏫 ${escapeHtml(c.name)}
+          <span class="count">${c.students.length} уч.</span>
+        </div>
+        <button type="button" class="btn btn-danger btn-sm" onclick="deleteClass('${c.id}')">
+          🗑 Удалить класс
+        </button>
+      </div>
+
+      <div class="add-student-form">
+        <input type="text" id="newStudent_${c.id}"
+               placeholder="ФИО ученика (например: Иванов Иван)"
+               onkeydown="if(event.key==='Enter') addStudent('${c.id}')">
+        <button type="button" class="btn btn-ok" onclick="addStudent('${c.id}')">
+          ➕ Добавить ученика
+        </button>
+      </div>
+
+      <div>
+        ${c.students.length ? c.students.map(s=>`
+          <div class="student-line">
+            <div class="avatar">${escapeHtml((s.name[0]||"?"))}</div>
+            <div class="name">${escapeHtml(s.name)}</div>
+            <div class="actions">
+              <button type="button" class="btn btn-sec btn-sm"
+                      onclick="editStudent('${c.id}', ${s.id})">✏️</button>
+              <button type="button" class="btn btn-danger btn-sm"
+                      onclick="deleteStudent('${c.id}', ${s.id})">🗑</button>
+            </div>
+          </div>
+        `).join("") : '<div class="empty-hint">В классе пока нет учеников</div>'}
+      </div>
+    </div>
+  `).join("");
+}
+
+function addClass(){
+  const inp = document.getElementById("newClassName");
+  const name = inp.value.trim();
+  if(!name){ toast("Введите название класса"); inp.focus(); return; }
+  if(DB.classes.some(c => c.name.toLowerCase() === name.toLowerCase())){
+    toast("Класс с таким названием уже есть"); return;
+  }
+  DB.classes.push({ id: "c" + Date.now(), name, students: [] });
+  save();
+  inp.value = "";
+  renderClasses();
+  renderClassSelects();
+  toast("✅ Класс «" + name + "» создан");
+}
+
+function deleteClass(classId){
+  const c = getClass(classId);
+  if(!c) return;
+  showConfirm(
+    "Удалить класс «" + c.name + "»?",
+    "Все ученики (" + c.students.length + ") и их оценки будут потеряны. Продолжить?",
+    () => {
+      DB.classes = DB.classes.filter(x => x.id !== classId);
+      // Очистим ответы, относящиеся к этому классу
+      const hwIds = DB.homeworks.filter(h => h.classId === classId).map(h => h.id);
+      hwIds.forEach(id => delete DB.answers[id]);
+      DB.homeworks = DB.homeworks.filter(h => h.classId !== classId);
+      save();
+      renderClasses();
+      renderClassSelects();
+      toast("Класс удалён");
+    }
+  );
+}
+
+function addStudent(classId){
+  const inp = document.getElementById("newStudent_" + classId);
+  const name = inp.value.trim();
+  if(!name){ toast("Введите ФИО ученика"); inp.focus(); return; }
+  const c = getClass(classId);
+  if(!c) return;
+  if(c.students.some(s => s.name.toLowerCase() === name.toLowerCase())){
+    toast("Такой ученик уже есть в классе"); return;
+  }
+  c.students.push({ id: Date.now(), name });
+  save();
+  inp.value = "";
+  renderClasses();
+  toast("✅ Ученик «" + name + "» добавлен");
+}
+
+function editStudent(classId, studentId){
+  const s = getStudent(classId, studentId);
+  if(!s) return;
+  const newName = prompt("Новое ФИО:", s.name);
+  if(newName === null) return;
+  const trimmed = newName.trim();
+  if(!trimmed){ toast("ФИО не может быть пустым"); return; }
+  s.name = trimmed;
+  save();
+  renderClasses();
+  toast("✅ ФИО изменено");
+}
+
+function deleteStudent(classId, studentId){
+  const s = getStudent(classId, studentId);
+  if(!s) return;
+  showConfirm(
+    "Удалить ученика?",
+    "«" + s.name + "» будет удалён из класса. Все его оценки потеряются.",
+    () => {
+      const c = getClass(classId);
+      c.students = c.students.filter(x => x.id !== studentId);
+      // Удалим оценки этого ученика по всем ДЗ класса
+      const hwIds = DB.homeworks.filter(h => h.classId === classId).map(h => h.id);
+      hwIds.forEach(hid => {
+        if(DB.answers[hid] && DB.answers[hid][studentId]) {
+          delete DB.answers[hid][studentId];
+        }
+      });
+      save();
+      renderClasses();
+      toast("Ученик удалён");
+    }
+  );
+}
+
+/* ============================================================
+   УЧИТЕЛЬ
    ============================================================ */
 async function createHomework(){
+  const classId = document.getElementById("hwClass").value;
   const title = document.getElementById("hwTitle").value.trim();
   const desc  = document.getElementById("hwDesc").value.trim();
   const link  = document.getElementById("hwLink").value.trim();
   const files = document.getElementById("hwFiles").files;
 
+  if(!classId){ toast("Сначала создайте класс (вкладка «Классы»)"); return; }
   if(!title){ toast("Введите название задания"); return; }
 
-  const hw = {
-    id: Date.now(),
-    title, desc, link,
-    files: [],
-    created: new Date().toISOString()
-  };
+  const hw = { id: Date.now(), classId, title, desc, link, files: [], created: new Date().toISOString() };
 
-  // Загрузка файлов на Яндекс.Диск
   if(files.length){
+    if(!YANDEX_TOKEN){ toast("Сначала введите токен Яндекс.Диска"); return; }
     const prog = document.getElementById("hwProgress");
     prog.classList.remove("hidden");
     try{
-      hw.files = await uploadFiles(files, "teacher", p=>{
+      hw.files = await uploadFiles(files, `class_${classId}/teacher`, p=>{
         prog.querySelector(".progress-bar").style.width = (p*100)+"%";
       });
-      toast("Файлы загружены на Яндекс.Диск");
-    }catch(e){
-      console.error(e);
-      toast("Ошибка загрузки: "+e.message);
-    }
+      toast("Файлы загружены");
+    }catch(e){ toast("Ошибка загрузки: "+e.message); }
     prog.classList.add("hidden");
     prog.querySelector(".progress-bar").style.width = "0";
   }
@@ -339,25 +692,38 @@ async function createHomework(){
   renderTeacherHW();
   toast("✅ Задание опубликовано");
 }
-
 function renderTeacherHW(){
   const box = document.getElementById("hwList");
   if(!DB.homeworks.length){ box.innerHTML = '<p class="muted">Пока нет заданий</p>'; return; }
-  box.innerHTML = DB.homeworks.map(hw => `
-    <div class="hw-block">
-      <h4>📌 ${escapeHtml(hw.title)}</h4>
-      ${hw.desc?`<p class="muted">${escapeHtml(hw.desc)}</p>`:""}
-      <div style="margin:8px 0">
-        ${hw.files.map(f=>`
-          <span class="file-chip">📎 <a href="${f.publicUrl||'#'}" target="_blank">${escapeHtml(f.name)}</a></span>
-        `).join("")}
-        ${hw.link?`<span class="file-chip">🔗 <a href="${escapeHtml(hw.link)}" target="_blank">Ссылка</a></span>`:""}
+  box.innerHTML = DB.homeworks.map(hw => {
+    const c = getClass(hw.classId);
+    const submitted = countSubmitted(hw.id);
+    const total = c ? c.students.length : 0;
+    return `
+      <div class="hw-block">
+        <div class="row" style="justify-content:space-between">
+          <h4>📌 ${escapeHtml(hw.title)}</h4>
+          <button type="button" class="btn btn-danger btn-sm" onclick="deleteHomework(${hw.id})">🗑</button>
+        </div>
+        <p class="muted">🏫 ${c?escapeHtml(c.name):"?"} · ${new Date(hw.created).toLocaleDateString("ru")}</p>
+        ${hw.desc?`<p class="muted">${escapeHtml(hw.desc)}</p>`:""}
+        <div style="margin:8px 0">
+          ${hw.files.map(f=>`<span class="file-chip">📎 <a href="${f.publicUrl||'#'}" target="_blank">${escapeHtml(f.name)}</a></span>`).join("")}
+          ${hw.link?`<span class="file-chip">🔗 <a href="${escapeHtml(hw.link)}" target="_blank">Ссылка</a></span>`:""}
+        </div>
+        <p class="muted">Сдано: ${submitted} из ${total}</p>
       </div>
-      <p class="muted">Сдано: ${countSubmitted(hw.id)} из ${STUDENTS.length}</p>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
-
+function deleteHomework(hwId){
+  showConfirm("Удалить задание?", "Все ответы и оценки по нему будут потеряны.", () => {
+    DB.homeworks = DB.homeworks.filter(h => h.id !== hwId);
+    delete DB.answers[hwId];
+    save(); renderTeacherHW(); renderJournal();
+    toast("Задание удалено");
+  });
+}
 function countSubmitted(hwId){
   const a = DB.answers[hwId] || {};
   return Object.values(a).filter(x=>x.submitted).length;
@@ -367,81 +733,79 @@ function countSubmitted(hwId){
    УЧЕНИК
    ============================================================ */
 function renderStudentSelect(){
+  renderClassSelects();
+  const classId = document.getElementById("studentClass").value;
   const sel = document.getElementById("studentSelect");
+  const c = getClass(classId);
+  if(!c){ sel.innerHTML = '<option value="">— нет класса —</option>'; return; }
   sel.innerHTML = '<option value="">— выбери себя —</option>' +
-    STUDENTS.map(s=>`<option value="${s.id}">${s.name}</option>`).join("");
+    c.students.map(s=>`<option value="${s.id}">${escapeHtml(s.name)}</option>`).join("");
 }
-
 function renderStudentView(){
+  const classId = document.getElementById("studentClass").value;
   const sid = +document.getElementById("studentSelect").value;
   const box = document.getElementById("studentView");
   if(!sid){ box.innerHTML = '<div class="card"><p class="muted">Выбери себя в списке выше</p></div>'; return; }
-  if(!DB.homeworks.length){ box.innerHTML = '<div class="card"><p class="muted">Заданий пока нет</p></div>'; return; }
-
-  box.innerHTML = DB.homeworks.map(hw=>{
+  const hws = DB.homeworks.filter(h => h.classId === classId);
+  if(!hws.length){ box.innerHTML = '<div class="card"><p class="muted">Заданий пока нет</p></div>'; return; }
+  box.innerHTML = hws.map(hw=>{
     const ans = (DB.answers[hw.id]||{})[sid] || {};
     return `
       <div class="card">
         <h3>📌 ${escapeHtml(hw.title)}</h3>
+        <p class="muted">${new Date(hw.created).toLocaleDateString("ru")}</p>
         ${hw.desc?`<p class="muted">${escapeHtml(hw.desc)}</p>`:""}
         <div style="margin:8px 0">
           ${hw.files.map(f=>`<span class="file-chip">📎 <a href="${f.publicUrl||'#'}" target="_blank">${escapeHtml(f.name)}</a></span>`).join("")}
           ${hw.link?`<span class="file-chip">🔗 <a href="${escapeHtml(hw.link)}" target="_blank">Материал</a></span>`:""}
         </div>
-
-        ${ans.submitted ? renderAnswerReadOnly(ans) : renderAnswerForm(hw.id, sid)}
+        ${ans.submitted ? renderAnswerReadOnly(ans) : renderAnswerForm(hw.id, sid, classId)}
       </div>
     `;
   }).join("");
 }
-
-function renderAnswerForm(hwId, sid){
+function renderAnswerForm(hwId, sid, classId){
   return `
     <hr style="margin:12px 0;border:none;border-top:1px solid var(--border)">
     <label class="muted">Твой ответ:</label>
     <input type="file" id="ansFiles_${hwId}" multiple accept="image/*,video/*" style="margin-top:6px">
     <input type="text" id="ansLink_${hwId}" placeholder="Или ссылка на работу" style="margin-top:8px">
     <div class="progress hidden" id="ansProg_${hwId}"><div class="progress-bar"></div></div>
-    <button class="btn btn-ok btn-sm" onclick="submitAnswer(${hwId}, ${sid})">📤 Сдать работу</button>
+    <button type="button" class="btn btn-ok btn-sm" onclick="submitAnswer(${hwId}, ${sid}, '${classId}')">📤 Сдать работу</button>
   `;
 }
-
 function renderAnswerReadOnly(ans){
   return `
     <div class="comment">
-      ✅ Работа сдана ${new Date(ans.submittedAt).toLocaleString("ru")}
+      ✅ Сдано ${new Date(ans.submittedAt).toLocaleString("ru")}
       ${ans.files?.length ? `<div style="margin-top:6px">${ans.files.map(f=>`<span class="file-chip">📎 <a href="${f.publicUrl||'#'}" target="_blank">${escapeHtml(f.name)}</a></span>`).join("")}</div>`:""}
       ${ans.link?`<div style="margin-top:6px"><span class="file-chip">🔗 <a href="${escapeHtml(ans.link)}" target="_blank">Ссылка</a></span></div>`:""}
     </div>
     ${ans.grade ? `
       <div style="margin-top:10px">
-        <b>Оценка:</b> <span class="grade-badge grade-${ans.grade}">${ans.grade}</span>
+        <b>Оценка:</b> <span class="grade-badge grade-${ans.grade==='Н'?'n':ans.grade}">${ans.grade}</span>
         ${ans.sticker?`<span style="font-size:24px;margin-left:8px">${ans.sticker}</span>`:""}
         ${ans.comment?`<div class="comment">💬 ${escapeHtml(ans.comment)}</div>`:""}
       </div>
-    ` : '<p class="muted" style="margin-top:8px">⏳ Ожидает проверки учителем</p>'}
+    ` : '<p class="muted" style="margin-top:8px">⏳ Ожидает проверки</p>'}
   `;
 }
-
-async function submitAnswer(hwId, sid){
+async function submitAnswer(hwId, sid, classId){
   const files = document.getElementById(`ansFiles_${hwId}`).files;
   const link  = document.getElementById(`ansLink_${hwId}`).value.trim();
   const prog  = document.getElementById(`ansProg_${hwId}`);
 
   const answer = { files:[], link, submitted:true, submittedAt: Date.now() };
-
   if(files.length){
+    if(!YANDEX_TOKEN){ toast("Сначала введите токен Яндекс.Диска"); return; }
     prog.classList.remove("hidden");
     try{
-      answer.files = await uploadFiles(files, `student_${sid}`, p=>{
+      answer.files = await uploadFiles(files, `class_${classId}/student_${sid}`, p=>{
         prog.querySelector(".progress-bar").style.width = (p*100)+"%";
       });
-      toast("Работа загружена на Яндекс.Диск");
-    }catch(e){
-      console.error(e); toast("Ошибка: "+e.message); prog.classList.add("hidden"); return;
-    }
+      toast("Работа загружена");
+    }catch(e){ toast("Ошибка: "+e.message); prog.classList.add("hidden"); return; }
   }
-
   DB.answers[hwId] = DB.answers[hwId] || {};
   DB.answers[hwId][sid] = answer;
   save();
@@ -450,92 +814,276 @@ async function submitAnswer(hwId, sid){
 }
 
 /* ============================================================
-   ЖУРНАЛ (учитель проверяет и ставит оценки)
+   ЖУРНАЛ
    ============================================================ */
-function renderJournal(){
-  const box = document.getElementById("journalList");
-  if(!DB.homeworks.length){ box.innerHTML = '<p class="muted">Нет заданий</p>'; return; }
+let currentGradeTarget = null;
+let currentStickerPack = "Учительский";
+let currentSticker = "";
 
-  box.innerHTML = DB.homeworks.map(hw=>`
-    <div class="hw-block">
-      <h4>📌 ${escapeHtml(hw.title)}</h4>
-      ${STUDENTS.map(s=>{
-        const ans = (DB.answers[hw.id]||{})[s.id];
-        return `
-          <div class="card" style="margin:8px 0;padding:12px">
-            <div class="student-row" style="border:none;padding:0">
-              <div class="student-info">
-                <div class="avatar">${s.name[0]}</div>
-                <b>${s.name}</b>
-              </div>
-              ${ans?.grade
-                ? `<span class="grade-badge grade-${ans.grade}">${ans.grade} ${ans.sticker||""}</span>`
-                : `<span class="grade-badge grade-none">${ans?"не проверено":"не сдано"}</span>`}
-            </div>
-            ${ans?.submitted ? `
-              ${ans.files?.length ? `<div style="margin-top:8px">${ans.files.map(f=>`<span class="file-chip">📎 <a href="${f.publicUrl||'#'}" target="_blank">${escapeHtml(f.name)}</a></span>`).join("")}</div>`:""}
-              ${ans.link?`<div><span class="file-chip">🔗 <a href="${escapeHtml(ans.link)}" target="_blank">Ссылка</a></span></div>`:""}
-              <div class="row" style="margin-top:10px">
-                <select id="g_${hw.id}_${s.id}" style="width:auto;margin:0">
-                  <option value="">Оценка…</option>
-                  ${[5,4,3,2].map(g=>`<option value="${g}" ${ans.grade==g?"selected":""}>${g}</option>`).join("")}
-                </select>
-                <input type="text" id="c_${hw.id}_${s.id}" placeholder="Комментарий"
-                       value="${ans.comment?escapeHtml(ans.comment):""}" style="flex:1;margin:0">
-              </div>
-              <div class="stickers" id="st_${hw.id}_${s.id}">
-                ${STICKERS.map(st=>`
-                  <span class="sticker ${ans.sticker===st?"selected":""}"
-                        onclick="pickSticker('${hw.id}','${s.id}','${st}', this)">${st}</span>
-                `).join("")}
-              </div>
-              <button class="btn btn-sm" onclick="saveGrade(${hw.id}, ${s.id})">💾 Сохранить оценку</button>
-            ` : '<p class="muted" style="margin-top:6px">Работа ещё не сдана</p>'}
-          </div>
-        `;
-      }).join("")}
-    </div>
+function renderJournal(){
+  renderClassSelects();
+  const classId = document.getElementById("journalClass").value;
+  const box = document.getElementById("journalTable");
+  const c = getClass(classId);
+  if(!c || !c.students.length){
+    box.innerHTML = '<p class="muted">Нет учеников в этом классе</p>';
+    return;
+  }
+  const hws = DB.homeworks.filter(h => h.classId === classId);
+
+  if(!hws.length){
+    box.innerHTML = '<p class="muted">Пока нет заданий для этого класса</p>';
+    return;
+  }
+
+  box.innerHTML = `
+    <table class="journal">
+      <thead>
+        <tr>
+          <th>Ученик</th>
+          ${hws.map(h=>`<th>${escapeHtml(h.title.substring(0,15))}</th>`).join("")}
+        </tr>
+      </thead>
+      <tbody>
+        ${c.students.map(s=>`
+          <tr>
+            <td class="name">${escapeHtml(s.name)}</td>
+            ${hws.map(h=>{
+              const ans = (DB.answers[h.id]||{})[s.id];
+              const grade = ans && ans.grade ? ans.grade : "";
+              const cls = grade === 'Н' ? 'grade-n' : (grade ? 'grade-' + grade : 'grade-none');
+              const sticker = ans && ans.sticker ? ' ' + ans.sticker : '';
+              return `<td class="clickable" onclick="openGradeModal(${h.id}, ${s.id})">
+                <span class="grade-badge ${cls}">${grade || '—'}${sticker}</span>
+              </td>`;
+            }).join("")}
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function openGradeModal(hwId, studentId){
+  const hw = DB.homeworks.find(h=>h.id===hwId);
+  const s = getStudent(hw.classId, studentId);
+  if(!hw || !s) return;
+
+  currentGradeTarget = { hwId, studentId };
+  const ans = (DB.answers[hwId]||{})[studentId] || {};
+
+  document.getElementById("gradeModalTitle").textContent = "Оценка за задание";
+  document.getElementById("gradeModalSub").textContent = `${s.name} · ${hw.title}`;
+
+  document.querySelectorAll("#gradeButtons button").forEach(b=>{
+    b.classList.toggle("selected", b.dataset.grade == ans.grade);
+  });
+
+  currentSticker = ans.sticker || "";
+  currentStickerPack = "Учительский";
+  renderStickerBox();
+
+  document.getElementById("gradeComment").value = ans.comment || "";
+  document.getElementById("gradeModal").classList.remove("hidden");
+}
+function closeGradeModal(){
+  document.getElementById("gradeModal").classList.add("hidden");
+  currentGradeTarget = null;
+}
+function pickGrade(g, btn){
+  document.querySelectorAll("#gradeButtons button").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+}
+function renderStickerBox(){
+  const tabs = document.getElementById("stickerPackTabs");
+  tabs.innerHTML = Object.keys(STICKER_PACKS).map(name=>`
+    <button type="button" class="${name===currentStickerPack?"active":""}"
+            onclick="changeStickerPack('${name}')">${name}</button>
+  `).join("");
+
+  const box = document.getElementById("stickerBox");
+  box.innerHTML = STICKER_PACKS[currentStickerPack].map(st=>`
+    <span class="sticker ${st===currentSticker?"selected":""}"
+          onclick="pickSticker('${st}', this)">${st}</span>
   `).join("");
 }
-
-function pickSticker(hwId, sid, sticker, el){
-  const parent = el.parentElement;
-  parent.querySelectorAll(".sticker").forEach(s=>s.classList.remove("selected"));
-  el.classList.add("selected");
-  el.dataset.picked = sticker;
+function changeStickerPack(name){
+  currentStickerPack = name;
+  renderStickerBox();
 }
-
-function saveGrade(hwId, sid){
-  const grade   = document.getElementById(`g_${hwId}_${sid}`).value;
-  const comment = document.getElementById(`c_${hwId}_${sid}`).value.trim();
-  const stBox   = document.getElementById(`st_${hwId}_${sid}`);
-  const picked  = stBox.querySelector(".sticker.selected")?.textContent || "";
+function pickSticker(st, el){
+  if(currentSticker === st){
+    currentSticker = "";
+    el.classList.remove("selected");
+  } else {
+    currentSticker = st;
+    document.querySelectorAll("#stickerBox .sticker").forEach(s=>s.classList.remove("selected"));
+    el.classList.add("selected");
+  }
+}
+function saveGrade(){
+  if(!currentGradeTarget) return;
+  const { hwId, studentId } = currentGradeTarget;
+  const grade = document.querySelector("#gradeButtons button.selected")?.dataset.grade;
+  const comment = document.getElementById("gradeComment").value.trim();
 
   if(!grade){ toast("Выберите оценку"); return; }
 
   DB.answers[hwId] = DB.answers[hwId] || {};
-  DB.answers[hwId][sid] = DB.answers[hwId][sid] || {};
-  Object.assign(DB.answers[hwId][sid], { grade:+grade, comment, sticker: picked });
-
+  DB.answers[hwId][studentId] = DB.answers[hwId][studentId] || {};
+  Object.assign(DB.answers[hwId][studentId], {
+    grade, comment, sticker: currentSticker
+  });
   save();
-  toast("💾 Оценка сохранена");
+  toast("💾 Сохранено");
+  closeGradeModal();
+  renderJournal();
+}
+function clearGrade(){
+  if(!currentGradeTarget) return;
+  const { hwId, studentId } = currentGradeTarget;
+  if(DB.answers[hwId] && DB.answers[hwId][studentId]){
+    delete DB.answers[hwId][studentId].grade;
+    delete DB.answers[hwId][studentId].comment;
+    delete DB.answers[hwId][studentId].sticker;
+  }
+  save();
+  toast("Оценка удалена");
+  closeGradeModal();
   renderJournal();
 }
 
 /* ============================================================
-   УТИЛИТЫ
+   РОДИТЕЛЬ
    ============================================================ */
-function escapeHtml(s){
-  return String(s||"").replace(/[&<>"']/g, m=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[m]));
+function renderParentSelect(){
+  renderClassSelects();
+  const classId = document.getElementById("parentClass").value;
+  const sel = document.getElementById("parentStudent");
+  const c = getClass(classId);
+  if(!c){ sel.innerHTML = '<option value="">— нет класса —</option>'; return; }
+  sel.innerHTML = '<option value="">— выбери ребёнка —</option>' +
+    c.students.map(s=>`<option value="${s.id}">${escapeHtml(s.name)}</option>`).join("");
+}
+function renderParentView(){
+  const classId = document.getElementById("parentClass").value;
+  const sid = +document.getElementById("parentStudent").value;
+  const box = document.getElementById("parentView");
+  if(!sid){ box.innerHTML = '<div class="card"><p class="muted">Выбери ребёнка в списке выше</p></div>'; return; }
+
+  const hws = DB.homeworks.filter(h => h.classId === classId);
+  const s = getStudent(classId, sid);
+  const grades = [];
+  hws.forEach(h => {
+    const ans = (DB.answers[h.id]||{})[sid];
+    if(ans && ans.grade && ans.grade !== 'Н'){
+      grades.push(parseInt(ans.grade));
+    }
+  });
+  const avg = grades.length ? (grades.reduce((a,b)=>a+b,0)/grades.length).toFixed(2) : "—";
+
+  box.innerHTML = `
+    <div class="card">
+      <h3>👤 ${escapeHtml(s.name)}</h3>
+      <p class="muted">Средний балл: <b>${avg}</b> · Оценок: <b>${grades.length}</b></p>
+    </div>
+    ${hws.map(h=>{
+      const ans = (DB.answers[h.id]||{})[sid];
+      if(!ans || !ans.grade) return `
+        <div class="card">
+          <h3>📌 ${escapeHtml(h.title)}</h3>
+          <p class="muted">${new Date(h.created).toLocaleDateString("ru")}</p>
+          <p class="muted" style="margin-top:8px">Оценка пока не выставлена</p>
+        </div>`;
+      const cls = ans.grade === 'Н' ? 'grade-n' : 'grade-' + ans.grade;
+      return `
+        <div class="card">
+          <h3>📌 ${escapeHtml(h.title)}</h3>
+          <p class="muted">${new Date(h.created).toLocaleDateString("ru")}</p>
+          <div style="margin-top:10px">
+            <span class="grade-badge ${cls}">${ans.grade}</span>
+            ${ans.sticker?`<span style="font-size:24px;margin-left:8px">${ans.sticker}</span>`:""}
+          </div>
+          ${ans.comment?`<div class="comment">💬 ${escapeHtml(ans.comment)}</div>`:""}
+        </div>`;
+    }).join("")}
+  `;
+}
+
+/* ============================================================
+   ЭКСПОРТ EXCEL
+   ============================================================ */
+function exportExcel(){
+  const classId = document.getElementById("journalClass").value;
+  const c = getClass(classId);
+  if(!c){ toast("Класс не выбран"); return; }
+  const hws = DB.homeworks.filter(h => h.classId === classId);
+
+  let csv = "\uFEFF";
+  csv += `Журнал класса ${c.name}\n`;
+  csv += `Дата выгрузки: ${new Date().toLocaleString("ru")}\n\n`;
+
+  csv += "Ученик";
+  hws.forEach(h => csv += `;${h.title}`);
+  csv += "\n";
+
+  c.students.forEach(s => {
+    csv += `"${s.name}"`;
+    hws.forEach(h => {
+      const ans = (DB.answers[h.id]||{})[s.id];
+      const grade = ans && ans.grade ? ans.grade : "";
+      csv += `;${grade}`;
+    });
+    csv += "\n";
+  });
+
+  csv += "\nСредний балл по классу";
+  hws.forEach(h => {
+    const grades = c.students.map(s => {
+      const ans = (DB.answers[h.id]||{})[s.id];
+      if(!ans || !ans.grade || ans.grade === 'Н') return null;
+      return parseInt(ans.grade);
+    }).filter(g => g !== null);
+    const avg = grades.length ? (grades.reduce((a,b)=>a+b,0)/grades.length).toFixed(2) : "";
+    csv += `;${avg}`;
+  });
+  csv += "\n";
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `journal_${c.name}_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast("📥 Журнал выгружен (CSV открывается в Excel)");
+}
+
+/* ============================================================
+   МОДАЛКА ПОДТВЕРЖДЕНИЯ
+   ============================================================ */
+let confirmCallback = null;
+function showConfirm(title, text, callback){
+  document.getElementById("confirmTitle").textContent = title;
+  document.getElementById("confirmText").textContent = text;
+  confirmCallback = callback;
+  document.getElementById("confirmModal").classList.remove("hidden");
+  document.getElementById("confirmYes").onclick = () => {
+    if(confirmCallback) confirmCallback();
+    closeConfirm();
+  };
+}
+function closeConfirm(){
+  document.getElementById("confirmModal").classList.add("hidden");
+  confirmCallback = null;
 }
 
 /* ============================================================
    СТАРТ
    ============================================================ */
-renderStudentSelect();
+renderClassSelects();
 renderTeacherHW();
+renderStudentSelect();
 checkCloud();
 </script>
 </body>
