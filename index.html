@@ -32,17 +32,11 @@
     margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);
   }
   .card h3{font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-  .student-row{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:10px;border-bottom:1px solid var(--border);
-  }
-  .student-row:last-child{border-bottom:none;}
   .avatar{
     width:36px;height:36px;border-radius:50%;background:var(--primary);
     color:#fff;display:flex;align-items:center;justify-content:center;
     font-weight:600;margin-right:10px;flex-shrink:0;
   }
-  .student-info{display:flex;align-items:center;flex:1;}
   .grade-badge{
     padding:4px 10px;border-radius:20px;font-size:13px;font-weight:600;
   }
@@ -164,18 +158,13 @@
   .grade-buttons button[data-grade="2"]{color:#991b1b;}
   .grade-buttons button[data-grade="Н"]{color:#5b21b6;font-size:15px;}
 
-  /* --- Стили для вкладки Классы --- */
   .create-class-form{
     display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;
     background:#f9fafb;padding:16px;border-radius:12px;margin-bottom:20px;
     border:1px dashed var(--border);
   }
-  .create-class-form input{
-    flex:1;min-width:220px;margin:0;
-  }
-  .create-class-form button{
-    margin:0;white-space:nowrap;
-  }
+  .create-class-form input{flex:1;min-width:220px;margin:0;}
+  .create-class-form button{margin:0;white-space:nowrap;}
 
   .class-card{
     border:1px solid var(--border);border-radius:12px;
@@ -196,9 +185,7 @@
     display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;
     margin-bottom:12px;
   }
-  .add-student-form input{
-    flex:1;min-width:180px;margin:0;
-  }
+  .add-student-form input{flex:1;min-width:180px;margin:0;}
   .add-student-form button{margin:0;white-space:nowrap;}
 
   .student-line{
@@ -207,12 +194,8 @@
     margin-bottom:6px;
   }
   .student-line .avatar{margin-right:12px;}
-  .student-line .name{
-    flex:1;font-weight:500;
-  }
-  .student-line .actions{
-    display:flex;gap:6px;
-  }
+  .student-line .name{flex:1;font-weight:500;}
+  .student-line .actions{display:flex;gap:6px;}
   .empty-hint{
     text-align:center;color:var(--muted);padding:20px;font-size:14px;
   }
@@ -224,16 +207,16 @@
   <h1>📚 Домашние задания — школа</h1>
   <div class="row">
     <span id="cloudStatus" class="muted" style="color:#fff;opacity:.85">☁️ Проверка Яндекс.Диска…</span>
-    <button class="btn btn-sec btn-sm" onclick="openTokenModal()">🔑 Токен</button>
+    <button type="button" class="btn btn-sec btn-sm" id="tokenBtn">🔑 Токен</button>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('teacher', this)">👩‍🏫 Учитель</button>
-  <button class="tab" onclick="switchTab('student', this)">🧑‍🎓 Ученик</button>
-  <button class="tab" onclick="switchTab('journal', this)">📊 Журнал</button>
-  <button class="tab" onclick="switchTab('classes', this)">🏫 Классы</button>
-  <button class="tab" onclick="switchTab('parent', this)">👨‍👩‍👧 Родитель</button>
+  <button type="button" class="tab active" data-tab="teacher">👩‍🏫 Учитель</button>
+  <button type="button" class="tab" data-tab="student">🧑‍🎓 Ученик</button>
+  <button type="button" class="tab" data-tab="journal">📊 Журнал</button>
+  <button type="button" class="tab" data-tab="classes">🏫 Классы</button>
+  <button type="button" class="tab" data-tab="parent">👨‍👩‍👧 Родитель</button>
 </div>
 
 <!-- УЧИТЕЛЬ -->
@@ -249,7 +232,7 @@
     </div>
     <input type="text" id="hwLink" placeholder="Или ссылка (YouTube, статья и т.п.)" style="margin-top:10px">
     <div class="progress hidden" id="hwProgress"><div class="progress-bar"></div></div>
-    <button class="btn" style="margin-top:6px" onclick="createHomework()">📤 Опубликовать задание</button>
+    <button type="button" class="btn" id="createHwBtn" style="margin-top:6px">📤 Опубликовать задание</button>
   </div>
   <div class="card">
     <h3>📋 Активные задания</h3>
@@ -261,8 +244,8 @@
 <div id="student" class="panel">
   <div class="card">
     <h3>🧑‍🎓 Выбери себя</h3>
-    <select id="studentClass" class="class-select" onchange="renderStudentSelect()"></select>
-    <select id="studentSelect" onchange="renderStudentView()"></select>
+    <select id="studentClass" class="class-select"></select>
+    <select id="studentSelect"></select>
   </div>
   <div id="studentView"></div>
 </div>
@@ -271,9 +254,9 @@
 <div id="journal" class="panel">
   <div class="card">
     <h3>📊 Журнал успеваемости</h3>
-    <select id="journalClass" class="class-select" onchange="renderJournal()"></select>
+    <select id="journalClass" class="class-select"></select>
     <div class="row" style="margin-bottom:12px">
-      <button class="btn excel-btn btn-sm" onclick="exportExcel()">📥 Выгрузить в Excel</button>
+      <button type="button" class="btn excel-btn btn-sm" id="exportBtn">📥 Выгрузить в Excel</button>
     </div>
     <div class="scroll-x" id="journalTable"></div>
     <p class="muted" style="margin-top:10px">💡 Кликните на ячейку — откроется окно для выставления оценки.</p>
@@ -284,15 +267,10 @@
 <div id="classes" class="panel">
   <div class="card">
     <h3>🏫 Классы и ученики</h3>
-
-    <!-- Форма создания класса -->
     <div class="create-class-form">
-      <input type="text" id="newClassName" placeholder="Название класса (например: 5А)"
-             onkeydown="if(event.key==='Enter') addClass()">
-      <button type="button" class="btn" onclick="addClass()">➕ Создать класс</button>
+      <input type="text" id="newClassName" placeholder="Название класса (например: 5А)">
+      <button type="button" class="btn" id="addClassBtn">➕ Создать класс</button>
     </div>
-
-    <!-- Список классов -->
     <div id="classList"></div>
   </div>
 </div>
@@ -301,45 +279,42 @@
 <div id="parent" class="panel">
   <div class="card">
     <h3>👨‍👩‍👧 Просмотр успеваемости ребёнка</h3>
-    <select id="parentClass" class="class-select" onchange="renderParentSelect()"></select>
-    <select id="parentStudent" onchange="renderParentView()"></select>
+    <select id="parentClass" class="class-select"></select>
+    <select id="parentStudent"></select>
   </div>
   <div id="parentView"></div>
 </div>
 
 <!-- Модалка токена -->
-<div class="modal-overlay hidden" id="tokenModal" onclick="if(event.target===this)closeTokenModal()">
+<div class="modal-overlay hidden" id="tokenModal">
   <div class="modal">
-    <button class="close-btn" onclick="closeTokenModal()">✕</button>
+    <button type="button" class="close-btn" id="closeTokenBtn">✕</button>
     <h3>🔑 Токен Яндекс.Диска</h3>
     <p class="muted" style="margin-bottom:12px">
       Вставьте OAuth-токен (начинается на <b>y0_</b>). Он сохранится в этом браузере.
     </p>
     <input type="text" id="tokenInput" placeholder="y0_AgAAAA..." style="font-family:monospace">
     <div class="row">
-      <button class="btn btn-ok" onclick="saveToken()">💾 Сохранить</button>
-      <button class="btn btn-danger btn-sm" onclick="clearToken()">🗑 Удалить токен</button>
+      <button type="button" class="btn btn-ok" id="saveTokenBtn">💾 Сохранить</button>
+      <button type="button" class="btn btn-danger btn-sm" id="clearTokenBtn">🗑 Удалить токен</button>
     </div>
-    <p class="muted" style="margin-top:12px;font-size:12px">
-      Получить: https://oauth.yandex.ru/ → ваше приложение → получить OAuth-токен.
-    </p>
   </div>
 </div>
 
 <!-- Модалка оценки -->
-<div class="modal-overlay hidden" id="gradeModal" onclick="if(event.target===this)closeGradeModal()">
+<div class="modal-overlay hidden" id="gradeModal">
   <div class="modal">
-    <button class="close-btn" onclick="closeGradeModal()">✕</button>
+    <button type="button" class="close-btn" id="closeGradeBtn">✕</button>
     <h3 id="gradeModalTitle">Оценка</h3>
     <p class="muted" id="gradeModalSub" style="margin-bottom:12px"></p>
 
     <label class="muted">Оценка:</label>
     <div class="grade-buttons" id="gradeButtons">
-      <button data-grade="5" onclick="pickGrade('5', this)">5</button>
-      <button data-grade="4" onclick="pickGrade('4', this)">4</button>
-      <button data-grade="3" onclick="pickGrade('3', this)">3</button>
-      <button data-grade="2" onclick="pickGrade('2', this)">2</button>
-      <button data-grade="Н" onclick="pickGrade('Н', this)">Н</button>
+      <button type="button" data-grade="5">5</button>
+      <button type="button" data-grade="4">4</button>
+      <button type="button" data-grade="3">3</button>
+      <button type="button" data-grade="2">2</button>
+      <button type="button" data-grade="Н">Н</button>
     </div>
 
     <label class="muted">Стикер:</label>
@@ -350,21 +325,21 @@
     <textarea id="gradeComment" placeholder="Например: Молодец, но проверь оформление"></textarea>
 
     <div class="row">
-      <button class="btn btn-ok" onclick="saveGrade()">💾 Сохранить</button>
-      <button class="btn btn-danger btn-sm" onclick="clearGrade()">🗑 Удалить оценку</button>
+      <button type="button" class="btn btn-ok" id="saveGradeBtn">💾 Сохранить</button>
+      <button type="button" class="btn btn-danger btn-sm" id="clearGradeBtn">🗑 Удалить оценку</button>
     </div>
   </div>
 </div>
 
 <!-- Модалка подтверждения -->
-<div class="modal-overlay hidden" id="confirmModal" onclick="if(event.target===this)closeConfirm()">
+<div class="modal-overlay hidden" id="confirmModal">
   <div class="modal">
-    <button class="close-btn" onclick="closeConfirm()">✕</button>
+    <button type="button" class="close-btn" id="closeConfirmBtn">✕</button>
     <h3 id="confirmTitle">Подтверждение</h3>
     <p id="confirmText" style="margin-bottom:18px"></p>
     <div class="row">
-      <button class="btn btn-danger" id="confirmYes">Да, удалить</button>
-      <button class="btn btn-sec" onclick="closeConfirm()">Отмена</button>
+      <button type="button" class="btn btn-danger" id="confirmYes">Да, удалить</button>
+      <button type="button" class="btn btn-sec" id="confirmNo">Отмена</button>
     </div>
   </div>
 </div>
@@ -375,9 +350,9 @@
 /* ============================================================
    НАСТРОЙКИ
    ============================================================ */
-let YANDEX_TOKEN = localStorage.getItem("yandex_token") || "";
 const CLOUD_FOLDER = "homework_app";
 const API = "https://cloud-api.yandex.net/v1/disk";
+let YANDEX_TOKEN = "";
 
 const STICKER_PACKS = {
   "Учительский": ["❤️","😂","🐶","😎","👍","💋","🌸","💯","👌","😁","✌️","😜","🙈","💖","😈","😆","💔","📷","😻","🔥","💪"],
@@ -385,6 +360,29 @@ const STICKER_PACKS = {
   "Эмоции":      ["😀","🤩","🥳","😇","🤓","😌","🙌","👏","🤝","😊","😅","🤗","😴","🥰"],
   "Мотивация":   ["🚀","⭐","🌈","☀️","🍀","🏅","🎖","👑","💎","🏆","🥇","✨","🎉","🌠"]
 };
+
+/* ============================================================
+   ТРАНСЛИТ — для имён папок
+   ============================================================ */
+const TRANSLIT = {
+  'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z',
+  'и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r',
+  'с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch',
+  'ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya',
+  'А':'A','Б':'B','В':'V','Г':'G','Д':'D','Е':'E','Ё':'E','Ж':'Zh','З':'Z',
+  'И':'I','Й':'Y','К':'K','Л':'L','М':'M','Н':'N','О':'O','П':'P','Р':'R',
+  'С':'S','Т':'T','У':'U','Ф':'F','Х':'H','Ц':'Ts','Ч':'Ch','Ш':'Sh','Щ':'Sch',
+  'Ъ':'','Ы':'Y','Ь':'','Э':'E','Ю':'Yu','Я':'Ya'
+};
+function translit(str){
+  return String(str)
+    .split('')
+    .map(ch => TRANSLIT[ch] !== undefined ? TRANSLIT[ch] : ch)
+    .join('')
+    .replace(/\s+/g, '_')
+    .replace(/[^A-Za-z0-9_\-]/g, '')
+    .slice(0, 60);
+}
 
 /* ============================================================
    ХРАНИЛИЩЕ
@@ -395,11 +393,26 @@ const DEFAULT_DB = {
   answers: {}
 };
 
-let DB = JSON.parse(localStorage.getItem("hw_db") || "null") || JSON.parse(JSON.stringify(DEFAULT_DB));
-if(!DB.classes) DB = JSON.parse(JSON.stringify(DEFAULT_DB));
-if(!DB.classes.length){
-  DB.classes = [{id:"5a", name:"5А", students: []}];
+function loadDB(){
+  try{
+    const raw = localStorage.getItem("hw_db");
+    if(!raw) return JSON.parse(JSON.stringify(DEFAULT_DB));
+    const parsed = JSON.parse(raw);
+    if(!parsed || !Array.isArray(parsed.classes)) return JSON.parse(JSON.stringify(DEFAULT_DB));
+    if(!Array.isArray(parsed.homeworks)) parsed.homeworks = [];
+    if(!parsed.answers || typeof parsed.answers !== "object") parsed.answers = {};
+    // Чиним структуру классов
+    parsed.classes.forEach(c => {
+      if(!Array.isArray(c.students)) c.students = [];
+    });
+    return parsed;
+  }catch(e){
+    console.error("Ошибка чтения базы:", e);
+    return JSON.parse(JSON.stringify(DEFAULT_DB));
+  }
 }
+
+let DB = loadDB();
 const save = () => localStorage.setItem("hw_db", JSON.stringify(DB));
 const getClass = (id) => DB.classes.find(c => c.id === id);
 const getStudent = (classId, studentId) => {
@@ -410,17 +423,6 @@ const getStudent = (classId, studentId) => {
 /* ============================================================
    UI-ХЕЛПЕРЫ
    ============================================================ */
-function switchTab(id, el){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-  el.classList.add("active");
-  document.getElementById(id).classList.add("active");
-  if(id==="journal") renderJournal();
-  if(id==="student") renderStudentSelect();
-  if(id==="teacher") { renderClassSelects(); renderTeacherHW(); }
-  if(id==="classes") renderClasses();
-  if(id==="parent") renderParentSelect();
-}
 function toast(msg){
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
@@ -430,6 +432,18 @@ function escapeHtml(s){
   return String(s||"").replace(/[&<>"']/g, m=>({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[m]));
+}
+function switchTab(id){
+  document.querySelectorAll(".tab").forEach(t=>{
+    t.classList.toggle("active", t.dataset.tab === id);
+  });
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  if(id==="journal") renderJournal();
+  if(id==="student") renderStudentSelect();
+  if(id==="teacher") { renderClassSelects(); renderTeacherHW(); }
+  if(id==="classes") renderClasses();
+  if(id==="parent") renderParentSelect();
 }
 
 /* ============================================================
@@ -462,29 +476,34 @@ function clearToken(){
    ============================================================ */
 async function checkCloud(){
   const status = document.getElementById("cloudStatus");
-  if(!YANDEX_TOKEN){ status.textContent = "⚠️ Токен не задан"; return false; }
+  if(!YANDEX_TOKEN){ status.textContent = "⚠️ Токен не задан"; return; }
   try{
     const r = await fetch(`${API}/`, { headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }});
     if(!r.ok) throw new Error("HTTP "+r.status);
     status.textContent = "☁️ Яндекс.Диск подключён";
-    await ensureFolder();
-    return true;
+    await ensureFolder(`/${CLOUD_FOLDER}`);
   }catch(e){
     status.textContent = "❌ Ошибка Яндекс.Диска";
-    return false;
   }
 }
-async function ensureFolder(){
-  const r = await fetch(`${API}/resources?path=/${CLOUD_FOLDER}`, {
+async function ensureFolder(path){
+  const r = await fetch(`${API}/resources?path=${encodeURIComponent(path)}`, {
     headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }
   });
   if(r.status === 404){
-    await fetch(`${API}/resources?path=/${CLOUD_FOLDER}`, {
+    await fetch(`${API}/resources?path=${encodeURIComponent(path)}`, {
       method:"PUT", headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }
     });
   }
 }
 async function uploadToYandexDisk(file, subfolder){
+  // Убедимся, что все родительские папки существуют
+  const parts = (`${CLOUD_FOLDER}/${subfolder}`).split('/').filter(Boolean);
+  let accum = "";
+  for(const p of parts){
+    accum += "/" + p;
+    await ensureFolder(accum);
+  }
   const remotePath = `/${CLOUD_FOLDER}/${subfolder}/${Date.now()}_${file.name}`;
   const urlResp = await fetch(
     `${API}/resources/upload?path=${encodeURIComponent(remotePath)}&overwrite=true`,
@@ -512,7 +531,7 @@ async function uploadFiles(files, subfolder, onProgress){
 }
 
 /* ============================================================
-   КЛАССЫ — управление
+   КЛАССЫ
    ============================================================ */
 function renderClassSelects(){
   const opts = DB.classes.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
@@ -535,16 +554,14 @@ function renderClasses(){
           🏫 ${escapeHtml(c.name)}
           <span class="count">${c.students.length} уч.</span>
         </div>
-        <button type="button" class="btn btn-danger btn-sm" onclick="deleteClass('${c.id}')">
+        <button type="button" class="btn btn-danger btn-sm" data-action="del-class" data-class="${c.id}">
           🗑 Удалить класс
         </button>
       </div>
 
       <div class="add-student-form">
-        <input type="text" id="newStudent_${c.id}"
-               placeholder="ФИО ученика (например: Иванов Иван)"
-               onkeydown="if(event.key==='Enter') addStudent('${c.id}')">
-        <button type="button" class="btn btn-ok" onclick="addStudent('${c.id}')">
+        <input type="text" id="newStudent_${c.id}" placeholder="ФИО ученика (например: Иванов Иван)">
+        <button type="button" class="btn btn-ok" data-action="add-student" data-class="${c.id}">
           ➕ Добавить ученика
         </button>
       </div>
@@ -556,9 +573,9 @@ function renderClasses(){
             <div class="name">${escapeHtml(s.name)}</div>
             <div class="actions">
               <button type="button" class="btn btn-sec btn-sm"
-                      onclick="editStudent('${c.id}', ${s.id})">✏️</button>
+                      data-action="edit-student" data-class="${c.id}" data-student="${s.id}">✏️</button>
               <button type="button" class="btn btn-danger btn-sm"
-                      onclick="deleteStudent('${c.id}', ${s.id})">🗑</button>
+                      data-action="del-student" data-class="${c.id}" data-student="${s.id}">🗑</button>
             </div>
           </div>
         `).join("") : '<div class="empty-hint">В классе пока нет учеников</div>'}
@@ -587,10 +604,9 @@ function deleteClass(classId){
   if(!c) return;
   showConfirm(
     "Удалить класс «" + c.name + "»?",
-    "Все ученики (" + c.students.length + ") и их оценки будут потеряны. Продолжить?",
+    "Все ученики (" + c.students.length + ") и их оценки будут потеряны.",
     () => {
       DB.classes = DB.classes.filter(x => x.id !== classId);
-      // Очистим ответы, относящиеся к этому классу
       const hwIds = DB.homeworks.filter(h => h.classId === classId).map(h => h.id);
       hwIds.forEach(id => delete DB.answers[id]);
       DB.homeworks = DB.homeworks.filter(h => h.classId !== classId);
@@ -604,6 +620,7 @@ function deleteClass(classId){
 
 function addStudent(classId){
   const inp = document.getElementById("newStudent_" + classId);
+  if(!inp) return;
   const name = inp.value.trim();
   if(!name){ toast("Введите ФИО ученика"); inp.focus(); return; }
   const c = getClass(classId);
@@ -640,7 +657,6 @@ function deleteStudent(classId, studentId){
     () => {
       const c = getClass(classId);
       c.students = c.students.filter(x => x.id !== studentId);
-      // Удалим оценки этого ученика по всем ДЗ класса
       const hwIds = DB.homeworks.filter(h => h.classId === classId).map(h => h.id);
       hwIds.forEach(hid => {
         if(DB.answers[hid] && DB.answers[hid][studentId]) {
@@ -655,7 +671,7 @@ function deleteStudent(classId, studentId){
 }
 
 /* ============================================================
-   УЧИТЕЛЬ
+   УЧИТЕЛЬ — создание ДЗ
    ============================================================ */
 async function createHomework(){
   const classId = document.getElementById("hwClass").value;
@@ -674,7 +690,8 @@ async function createHomework(){
     const prog = document.getElementById("hwProgress");
     prog.classList.remove("hidden");
     try{
-      hw.files = await uploadFiles(files, `class_${classId}/teacher`, p=>{
+      // Папка: class_5A/hw_<id>/teacher/
+      hw.files = await uploadFiles(files, `class_${classId}/hw_${hw.id}/teacher`, p=>{
         prog.querySelector(".progress-bar").style.width = (p*100)+"%";
       });
       toast("Файлы загружены");
@@ -692,6 +709,7 @@ async function createHomework(){
   renderTeacherHW();
   toast("✅ Задание опубликовано");
 }
+
 function renderTeacherHW(){
   const box = document.getElementById("hwList");
   if(!DB.homeworks.length){ box.innerHTML = '<p class="muted">Пока нет заданий</p>'; return; }
@@ -703,7 +721,7 @@ function renderTeacherHW(){
       <div class="hw-block">
         <div class="row" style="justify-content:space-between">
           <h4>📌 ${escapeHtml(hw.title)}</h4>
-          <button type="button" class="btn btn-danger btn-sm" onclick="deleteHomework(${hw.id})">🗑</button>
+          <button type="button" class="btn btn-danger btn-sm" data-action="del-hw" data-hw="${hw.id}">🗑</button>
         </div>
         <p class="muted">🏫 ${c?escapeHtml(c.name):"?"} · ${new Date(hw.created).toLocaleDateString("ru")}</p>
         ${hw.desc?`<p class="muted">${escapeHtml(hw.desc)}</p>`:""}
@@ -716,6 +734,7 @@ function renderTeacherHW(){
     `;
   }).join("");
 }
+
 function deleteHomework(hwId){
   showConfirm("Удалить задание?", "Все ответы и оценки по нему будут потеряны.", () => {
     DB.homeworks = DB.homeworks.filter(h => h.id !== hwId);
@@ -733,7 +752,6 @@ function countSubmitted(hwId){
    УЧЕНИК
    ============================================================ */
 function renderStudentSelect(){
-  renderClassSelects();
   const classId = document.getElementById("studentClass").value;
   const sel = document.getElementById("studentSelect");
   const c = getClass(classId);
@@ -771,7 +789,8 @@ function renderAnswerForm(hwId, sid, classId){
     <input type="file" id="ansFiles_${hwId}" multiple accept="image/*,video/*" style="margin-top:6px">
     <input type="text" id="ansLink_${hwId}" placeholder="Или ссылка на работу" style="margin-top:8px">
     <div class="progress hidden" id="ansProg_${hwId}"><div class="progress-bar"></div></div>
-    <button type="button" class="btn btn-ok btn-sm" onclick="submitAnswer(${hwId}, ${sid}, '${classId}')">📤 Сдать работу</button>
+    <button type="button" class="btn btn-ok btn-sm" data-action="submit-answer"
+            data-hw="${hwId}" data-student="${sid}" data-class="${classId}">📤 Сдать работу</button>
   `;
 }
 function renderAnswerReadOnly(ans){
@@ -800,7 +819,10 @@ async function submitAnswer(hwId, sid, classId){
     if(!YANDEX_TOKEN){ toast("Сначала введите токен Яндекс.Диска"); return; }
     prog.classList.remove("hidden");
     try{
-      answer.files = await uploadFiles(files, `class_${classId}/student_${sid}`, p=>{
+      const s = getStudent(classId, sid);
+      const folderName = s ? translit(s.name) : `student_${sid}`;
+      // Папка: class_5A/hw_<id>/Ivanov_Ivan/
+      answer.files = await uploadFiles(files, `class_${classId}/hw_${hwId}/${folderName}`, p=>{
         prog.querySelector(".progress-bar").style.width = (p*100)+"%";
       });
       toast("Работа загружена");
@@ -821,7 +843,6 @@ let currentStickerPack = "Учительский";
 let currentSticker = "";
 
 function renderJournal(){
-  renderClassSelects();
   const classId = document.getElementById("journalClass").value;
   const box = document.getElementById("journalTable");
   const c = getClass(classId);
@@ -830,12 +851,10 @@ function renderJournal(){
     return;
   }
   const hws = DB.homeworks.filter(h => h.classId === classId);
-
   if(!hws.length){
     box.innerHTML = '<p class="muted">Пока нет заданий для этого класса</p>';
     return;
   }
-
   box.innerHTML = `
     <table class="journal">
       <thead>
@@ -853,7 +872,7 @@ function renderJournal(){
               const grade = ans && ans.grade ? ans.grade : "";
               const cls = grade === 'Н' ? 'grade-n' : (grade ? 'grade-' + grade : 'grade-none');
               const sticker = ans && ans.sticker ? ' ' + ans.sticker : '';
-              return `<td class="clickable" onclick="openGradeModal(${h.id}, ${s.id})">
+              return `<td class="clickable" data-action="open-grade" data-hw="${h.id}" data-student="${s.id}">
                 <span class="grade-badge ${cls}">${grade || '—'}${sticker}</span>
               </td>`;
             }).join("")}
@@ -882,7 +901,6 @@ function openGradeModal(hwId, studentId){
   currentSticker = ans.sticker || "";
   currentStickerPack = "Учительский";
   renderStickerBox();
-
   document.getElementById("gradeComment").value = ans.comment || "";
   document.getElementById("gradeModal").classList.remove("hidden");
 }
@@ -890,36 +908,17 @@ function closeGradeModal(){
   document.getElementById("gradeModal").classList.add("hidden");
   currentGradeTarget = null;
 }
-function pickGrade(g, btn){
-  document.querySelectorAll("#gradeButtons button").forEach(b=>b.classList.remove("selected"));
-  btn.classList.add("selected");
-}
 function renderStickerBox(){
   const tabs = document.getElementById("stickerPackTabs");
   tabs.innerHTML = Object.keys(STICKER_PACKS).map(name=>`
     <button type="button" class="${name===currentStickerPack?"active":""}"
-            onclick="changeStickerPack('${name}')">${name}</button>
+            data-sticker-pack="${name}">${name}</button>
   `).join("");
 
   const box = document.getElementById("stickerBox");
   box.innerHTML = STICKER_PACKS[currentStickerPack].map(st=>`
-    <span class="sticker ${st===currentSticker?"selected":""}"
-          onclick="pickSticker('${st}', this)">${st}</span>
+    <span class="sticker ${st===currentSticker?"selected":""}" data-sticker="${st}">${st}</span>
   `).join("");
-}
-function changeStickerPack(name){
-  currentStickerPack = name;
-  renderStickerBox();
-}
-function pickSticker(st, el){
-  if(currentSticker === st){
-    currentSticker = "";
-    el.classList.remove("selected");
-  } else {
-    currentSticker = st;
-    document.querySelectorAll("#stickerBox .sticker").forEach(s=>s.classList.remove("selected"));
-    el.classList.add("selected");
-  }
 }
 function saveGrade(){
   if(!currentGradeTarget) return;
@@ -957,7 +956,6 @@ function clearGrade(){
    РОДИТЕЛЬ
    ============================================================ */
 function renderParentSelect(){
-  renderClassSelects();
   const classId = document.getElementById("parentClass").value;
   const sel = document.getElementById("parentStudent");
   const c = getClass(classId);
@@ -976,9 +974,7 @@ function renderParentView(){
   const grades = [];
   hws.forEach(h => {
     const ans = (DB.answers[h.id]||{})[sid];
-    if(ans && ans.grade && ans.grade !== 'Н'){
-      grades.push(parseInt(ans.grade));
-    }
+    if(ans && ans.grade && ans.grade !== 'Н') grades.push(parseInt(ans.grade));
   });
   const avg = grades.length ? (grades.reduce((a,b)=>a+b,0)/grades.length).toFixed(2) : "—";
 
@@ -1022,7 +1018,6 @@ function exportExcel(){
   let csv = "\uFEFF";
   csv += `Журнал класса ${c.name}\n`;
   csv += `Дата выгрузки: ${new Date().toLocaleString("ru")}\n\n`;
-
   csv += "Ученик";
   hws.forEach(h => csv += `;${h.title}`);
   csv += "\n";
@@ -1056,7 +1051,7 @@ function exportExcel(){
   a.download = `journal_${c.name}_${new Date().toISOString().slice(0,10)}.csv`;
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  toast("📥 Журнал выгружен (CSV открывается в Excel)");
+  toast("📥 Журнал выгружен");
 }
 
 /* ============================================================
@@ -1068,10 +1063,6 @@ function showConfirm(title, text, callback){
   document.getElementById("confirmText").textContent = text;
   confirmCallback = callback;
   document.getElementById("confirmModal").classList.remove("hidden");
-  document.getElementById("confirmYes").onclick = () => {
-    if(confirmCallback) confirmCallback();
-    closeConfirm();
-  };
 }
 function closeConfirm(){
   document.getElementById("confirmModal").classList.add("hidden");
@@ -1079,12 +1070,109 @@ function closeConfirm(){
 }
 
 /* ============================================================
-   СТАРТ
+   ЕДИНЫЙ ОБРАБОТЧИК КЛИКОВ (делегирование)
    ============================================================ */
-renderClassSelects();
-renderTeacherHW();
-renderStudentSelect();
-checkCloud();
+document.addEventListener("click", (e)=>{
+  const el = e.target.closest("[data-action]");
+  if(!el) return;
+  const action = el.dataset.action;
+  const classId = el.dataset.class;
+  const studentId = el.dataset.student ? +el.dataset.student : null;
+  const hwId = el.dataset.hw ? +el.dataset.hw : null;
+
+  if(action === "del-class")   deleteClass(classId);
+  if(action === "add-student") addStudent(classId);
+  if(action === "edit-student") editStudent(classId, studentId);
+  if(action === "del-student") deleteStudent(classId, studentId);
+  if(action === "del-hw")      deleteHomework(hwId);
+  if(action === "submit-answer") submitAnswer(hwId, studentId, classId);
+  if(action === "open-grade")  openGradeModal(hwId, studentId);
+});
+
+/* Стикеры (отдельный обработчик) */
+document.addEventListener("click", (e)=>{
+  const pack = e.target.closest("[data-sticker-pack]");
+  if(pack){
+    currentStickerPack = pack.dataset.stickerPack;
+    renderStickerBox();
+    return;
+  }
+  const st = e.target.closest("[data-sticker]");
+  if(st){
+    const val = st.dataset.sticker;
+    if(currentSticker === val){ currentSticker = ""; }
+    else { currentSticker = val; }
+    document.querySelectorAll("#stickerBox .sticker").forEach(s=>{
+      s.classList.toggle("selected", s.dataset.sticker === currentSticker);
+    });
+  }
+});
+
+/* ============================================================
+   ИНИЦИАЛИЗАЦИЯ — всё после загрузки DOM
+   ============================================================ */
+function init(){
+  // Токен
+  YANDEX_TOKEN = localStorage.getItem("yandex_token") || "";
+
+  // Вкладки
+  document.querySelectorAll(".tab").forEach(t=>{
+    t.addEventListener("click", ()=> switchTab(t.dataset.tab));
+  });
+
+  // Кнопки
+  document.getElementById("tokenBtn").addEventListener("click", openTokenModal);
+  document.getElementById("closeTokenBtn").addEventListener("click", closeTokenModal);
+  document.getElementById("saveTokenBtn").addEventListener("click", saveToken);
+  document.getElementById("clearTokenBtn").addEventListener("click", clearToken);
+
+  document.getElementById("addClassBtn").addEventListener("click", addClass);
+  document.getElementById("newClassName").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter") addClass();
+  });
+
+  document.getElementById("createHwBtn").addEventListener("click", createHomework);
+  document.getElementById("exportBtn").addEventListener("click", exportExcel);
+
+  document.getElementById("closeGradeBtn").addEventListener("click", closeGradeModal);
+  document.getElementById("saveGradeBtn").addEventListener("click", saveGrade);
+  document.getElementById("clearGradeBtn").addEventListener("click", clearGrade);
+
+  document.getElementById("closeConfirmBtn").addEventListener("click", closeConfirm);
+  document.getElementById("confirmNo").addEventListener("click", closeConfirm);
+  document.getElementById("confirmYes").addEventListener("click", ()=>{
+    if(confirmCallback) confirmCallback();
+    closeConfirm();
+  });
+
+  // Оценки — кнопки
+  document.querySelectorAll("#gradeButtons button").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      document.querySelectorAll("#gradeButtons button").forEach(x=>x.classList.remove("selected"));
+      b.classList.add("selected");
+    });
+  });
+
+  // Селекты
+  document.getElementById("studentClass").addEventListener("change", renderStudentSelect);
+  document.getElementById("studentSelect").addEventListener("change", renderStudentView);
+  document.getElementById("journalClass").addEventListener("change", renderJournal);
+  document.getElementById("parentClass").addEventListener("change", renderParentSelect);
+  document.getElementById("parentStudent").addEventListener("change", renderParentView);
+
+  // Первый рендер
+  renderClassSelects();
+  renderTeacherHW();
+  renderStudentSelect();
+  checkCloud();
+}
+
+// Запуск после полной загрузки страницы
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
 </script>
 </body>
 </html>
