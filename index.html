@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5 класс — Домашние задания</title>
+<style>
+  :root{
+    --bg:#f4f7fb; --card:#fff; --primary:#4a6cf7; --primary-d:#3a55c4;
+    --ok:#22c55e; --warn:#f59e0b; --err:#ef4444; --muted:#6b7280;
+    --border:#e5e7eb; --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif;}
+  body{background:var(--bg);color:#1f2937;padding:16px;}
+  header{
+    background:linear-gradient(135deg,#4a6cf7,#8b5cf6);
+    color:#fff;padding:20px;border-radius:var(--radius);
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:20px;flex-wrap:wrap;gap:12px;
+  }
+  header h1{font-size:20px;}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{
+    padding:10px 18px;border-radius:10px;border:1px solid var(--border);
+    background:#fff;cursor:pointer;font-weight:500;transition:.2s;
+  }
+  .tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .card{
+    background:var(--card);border-radius:var(--radius);padding:18px;
+    margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  .card h3{font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .student-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px;border-bottom:1px solid var(--border);
+  }
+  .student-row:last-child{border-bottom:none;}
+  .avatar{
+    width:36px;height:36px;border-radius:50%;background:var(--primary);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-weight:600;margin-right:10px;
+  }
+  .student-info{display:flex;align-items:center;flex:1;}
+  .grade-badge{
+    padding:4px 10px;border-radius:20px;font-size:13px;font-weight:600;
+  }
+  .grade-5{background:#dcfce7;color:#166534;}
+  .grade-4{background:#dbeafe;color:#1e40af;}
+  .grade-3{background:#fef3c7;color:#92400e;}
+  .grade-2{background:#fee2e2;color:#991b1b;}
+  .grade-none{background:#f3f4f6;color:#6b7280;}
+
+  input[type=text],textarea,select{
+    width:100%;padding:10px 12px;border:1px solid var(--border);
+    border-radius:10px;font-size:14px;margin-bottom:10px;font-family:inherit;
+  }
+  textarea{resize:vertical;min-height:70px;}
+  .btn{
+    padding:10px 18px;border:none;border-radius:10px;cursor:pointer;
+    font-weight:600;font-size:14px;transition:.2s;background:var(--primary);color:#fff;
+  }
+  .btn:hover{background:var(--primary-d);}
+  .btn-sec{background:#eef2ff;color:var(--primary);}
+  .btn-sec:hover{background:#dbe4ff;}
+  .btn-ok{background:var(--ok);}
+  .btn-ok:hover{background:#16a34a;}
+  .btn-sm{padding:6px 12px;font-size:13px;}
+
+  .file-chip{
+    display:inline-flex;align-items:center;gap:6px;
+    background:#eef2ff;color:#3a55c4;padding:6px 12px;
+    border-radius:20px;font-size:13px;margin:4px 4px 4px 0;
+  }
+  .file-chip a{color:inherit;text-decoration:none;font-weight:600;}
+  .file-chip a:hover{text-decoration:underline;}
+
+  .stickers{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;}
+  .sticker{
+    font-size:26px;cursor:pointer;padding:4px 8px;border-radius:10px;
+    transition:.15s;user-select:none;
+  }
+  .sticker:hover{background:#f3f4f6;transform:scale(1.15);}
+  .sticker.selected{background:#eef2ff;box-shadow:0 0 0 2px var(--primary);}
+
+  .progress{
+    height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin-top:8px;
+  }
+  .progress-bar{height:100%;background:var(--primary);width:0;transition:.3s;}
+
+  .toast{
+    position:fixed;bottom:24px;right:24px;background:#1f2937;color:#fff;
+    padding:14px 20px;border-radius:12px;font-size:14px;
+    opacity:0;transform:translateY(20px);transition:.3s;z-index:999;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  .comment{
+    background:#f9fafb;border-left:3px solid var(--primary);
+    padding:8px 12px;border-radius:6px;font-size:13px;margin-top:8px;
+    color:#374151;
+  }
+  .hw-block{
+    border:1px solid var(--border);border-radius:12px;
+    padding:14px;margin-bottom:12px;
+  }
+  .hw-block h4{font-size:15px;margin-bottom:8px;}
+  .muted{color:var(--muted);font-size:13px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📚 5 «А» — Домашние задания</h1>
+  <div class="row">
+    <span id="cloudStatus" class="muted" style="color:#fff;opacity:.85">☁️ Проверка Яндекс.Диска…</span>
+    <button class="btn btn-sec btn-sm" onclick="openTokenHelp()">🔑 Токен</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('teacher', this)">👩‍🏫 Учитель</button>
+  <button class="tab" onclick="switchTab('student', this)">🧑‍🎓 Ученик</button>
+  <button class="tab" onclick="switchTab('journal', this)">📊 Журнал</button>
+</div>
+
+<!-- ========== УЧИТЕЛЬ ========== -->
+<div id="teacher" class="panel active">
+  <div class="card">
+    <h3>📝 Создать домашнее задание</h3>
+    <input type="text" id="hwTitle" placeholder="Название (например: Математика, стр. 45 №12)">
+    <input type="text" id="hwDesc" placeholder="Описание задания (текстом)">
+    <label class="muted">Прикрепить материалы:</label>
+    <div class="row" style="margin-top:8px">
+      <input type="file" id="hwFiles" multiple accept="image/*,video/*">
+    </div>
+    <input type="text" id="hwLink" placeholder="Или ссылка (YouTube, статья и т.п.)" style="margin-top:10px">
+    <div class="progress hidden" id="hwProgress"><div class="progress-bar"></div></div>
+    <button class="btn" style="margin-top:6px" onclick="createHomework()">📤 Опубликовать задание</button>
+  </div>
+
+  <div class="card">
+    <h3>📋 Активные задания</h3>
+    <div id="hwList"><p class="muted">Пока нет заданий</p></div>
+  </div>
+</div>
+
+<!-- ========== УЧЕНИК ========== -->
+<div id="student" class="panel">
+  <div class="card">
+    <h3>🧑‍🎓 Выбери себя</h3>
+    <select id="studentSelect" onchange="renderStudentView()"></select>
+  </div>
+  <div id="studentView"></div>
+</div>
+
+<!-- ========== ЖУРНАЛ ========== -->
+<div id="journal" class="panel">
+  <div class="card">
+    <h3>📊 Успеваемость класса</h3>
+    <div id="journalList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   НАСТРОЙКИ
+   ============================================================ */
+const YANDEX_TOKEN = "ВСТАВЬТЕ_СЮДА_ВАШ_OAUTH_ТОКЕН";  // ← сюда
+const CLOUD_FOLDER = "homework_app";                    // папка на Яндекс.Диске
+const API = "https://cloud-api.yandex.net/v1/disk";
+
+/* ============================================================
+   СПИСОК ДЕТЕЙ (можно потом заменить на данные из БД)
+   ============================================================ */
+const STUDENTS = [
+  { id: 1, name: "Иванов Иван" },
+  { id: 2, name: "Петрова Мария" },
+  { id: 3, name: "Сидоров Артём" },
+  { id: 4, name: "Кузнецова Алиса" },
+  { id: 5, name: "Смирнов Дмитрий" },
+];
+
+const STICKERS = ["👍","🔥","🌟","💪","🎉","😍","🤔","📚","✅","❤️"];
+
+/* ============================================================
+   ХРАНИЛИЩЕ (localStorage — для прототипа)
+   ============================================================ */
+let DB = JSON.parse(localStorage.getItem("hw_db") || "null") || {
+  homeworks: [],   // {id, title, desc, files:[{name,url}], link, created}
+  answers: {}      // { hwId: { studentId: {files, link, grade, comment, sticker, submitted} } }
+};
+const save = () => localStorage.setItem("hw_db", JSON.stringify(DB));
+
+/* ============================================================
+   UI-ХЕЛПЕРЫ
+   ============================================================ */
+function switchTab(id, el){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  el.classList.add("active");
+  document.getElementById(id).classList.add("active");
+  if(id==="journal") renderJournal();
+  if(id==="student") renderStudentView();
+}
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2600);
+}
+function openTokenHelp(){
+  alert("1) Зайдите на https://oauth.yandex.ru/\n2) Создайте приложение (Веб-сервисы)\n3) Включите права: cloud_api:disk.read, cloud_api:disk.write, cloud_api:disk.info\n4) Получите токен по ссылке:\nhttps://oauth.yandex.ru/authorize?response_type=token&client_id=ВАШ_CLIENT_ID\n5) Вставьте токен в переменную YANDEX_TOKEN в коде.");
+}
+
+/* ============================================================
+   ЯНДЕКС.ДИСК — API
+   ============================================================ */
+
+// Проверка токена и доступности диска
+async function checkCloud(){
+  const status = document.getElementById("cloudStatus");
+  if(!YANDEX_TOKEN || YANDEX_TOKEN.includes("ВСТАВЬТЕ")){
+    status.textContent = "⚠️ Токен не задан";
+    return false;
+  }
+  try{
+    const r = await fetch(`${API}/`, { headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    status.textContent = "☁️ Яндекс.Диск подключён";
+    await ensureFolder();
+    return true;
+  }catch(e){
+    status.textContent = "❌ Ошибка Яндекс.Диска";
+    console.error(e);
+    return false;
+  }
+}
+
+// Создать папку приложения, если её нет
+async function ensureFolder(){
+  const r = await fetch(`${API}/resources?path=/${CLOUD_FOLDER}`, {
+    headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }
+  });
+  if(r.status === 404){
+    await fetch(`${API}/resources?path=/${CLOUD_FOLDER}`, {
+      method:"PUT",
+      headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }
+    });
+  }
+}
+
+// Загрузка одного файла на Яндекс.Диск
+// Возвращает {name, path, publicUrl}
+async function uploadToYandexDisk(file, subfolder){
+  // 1. Запрашиваем URL для загрузки
+  const remotePath = `/${CLOUD_FOLDER}/${subfolder}/${Date.now()}_${file.name}`;
+  const urlResp = await fetch(
+    `${API}/resources/upload?path=${encodeURIComponent(remotePath)}&overwrite=true`,
+    { headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }}
+  );
+  if(!urlResp.ok) throw new Error("Не получил upload URL");
+  const { href } = await urlResp.json();
+
+  // 2. PUT-загрузка самого файла
+  const putResp = await fetch(href, { method:"PUT", body:file });
+  if(!putResp.ok) throw new Error("Ошибка загрузки файла");
+
+  // 3. Публикуем файл
+  const pubResp = await fetch(
+    `${API}/resources/publish?path=${encodeURIComponent(remotePath)}`,
+    { method:"PUT", headers:{ Authorization:`OAuth ${YANDEX_TOKEN}` }}
+  );
+  const pubData = await pubResp.json();
+
+  return {
+    name: file.name,
+    path: remotePath,
+    publicUrl: pubData.public_url || null
+  };
+}
+
+// Загрузка массива файлов с прогрессом
+async function uploadFiles(files, subfolder, onProgress){
+  const result = [];
+  for(let i=0;i<files.length;i++){
+    onProgress?.(i/files.length);
+    result.push(await uploadToYandexDisk(files[i], subfolder));
+  }
+  onProgress?.(1);
+  return result;
+}
+
+/* ============================================================
+   УЧИТЕЛЬ — создание ДЗ
+   ============================================================ */
+async function createHomework(){
+  const title = document.getElementById("hwTitle").value.trim();
+  const desc  = document.getElementById("hwDesc").value.trim();
+  const link  = document.getElementById("hwLink").value.trim();
+  const files = document.getElementById("hwFiles").files;
+
+  if(!title){ toast("Введите название задания"); return; }
+
+  const hw = {
+    id: Date.now(),
+    title, desc, link,
+    files: [],
+    created: new Date().toISOString()
+  };
+
+  // Загрузка файлов на Яндекс.Диск
+  if(files.length){
+    const prog = document.getElementById("hwProgress");
+    prog.classList.remove("hidden");
+    try{
+      hw.files = await uploadFiles(files, "teacher", p=>{
+        prog.querySelector(".progress-bar").style.width = (p*100)+"%";
+      });
+      toast("Файлы загружены на Яндекс.Диск");
+    }catch(e){
+      console.error(e);
+      toast("Ошибка загрузки: "+e.message);
+    }
+    prog.classList.add("hidden");
+    prog.querySelector(".progress-bar").style.width = "0";
+  }
+
+  DB.homeworks.unshift(hw);
+  save();
+  document.getElementById("hwTitle").value = "";
+  document.getElementById("hwDesc").value  = "";
+  document.getElementById("hwLink").value  = "";
+  document.getElementById("hwFiles").value = "";
+  renderTeacherHW();
+  toast("✅ Задание опубликовано");
+}
+
+function renderTeacherHW(){
+  const box = document.getElementById("hwList");
+  if(!DB.homeworks.length){ box.innerHTML = '<p class="muted">Пока нет заданий</p>'; return; }
+  box.innerHTML = DB.homeworks.map(hw => `
+    <div class="hw-block">
+      <h4>📌 ${escapeHtml(hw.title)}</h4>
+      ${hw.desc?`<p class="muted">${escapeHtml(hw.desc)}</p>`:""}
+      <div style="margin:8px 0">
+        ${hw.files.map(f=>`
+          <span class="file-chip">📎 <a href="${f.publicUrl||'#'}" target="_blank">${escapeHtml(f.name)}</a></span>
+        `).join("")}
+        ${hw.link?`<span class="file-chip">🔗 <a href="${escapeHtml(hw.link)}" target="_blank">Ссылка</a></span>`:""}
+      </div>
+      <p class="muted">Сдано: ${countSubmitted(hw.id)} из ${STUDENTS.length}</p>
+    </div>
+  `).join("");
+}
+
+function countSubmitted(hwId){
+  const a = DB.answers[hwId] || {};
+  return Object.values(a).filter(x=>x.submitted).length;
+}
+
+/* ============================================================
+   УЧЕНИК
+   ============================================================ */
+function renderStudentSelect(){
+  const sel = document.getElementById("studentSelect");
+  sel.innerHTML = '<option value="">— выбери себя —</option>' +
+    STUDENTS.map(s=>`<option value="${s.id}">${s.name}</option>`).join("");
+}
+
+function renderStudentView(){
+  const sid = +document.getElementById("studentSelect").value;
+  const box = document.getElementById("studentView");
+  if(!sid){ box.innerHTML = '<div class="card"><p class="muted">Выбери себя в списке выше</p></div>'; return; }
+  if(!DB.homeworks.length){ box.innerHTML = '<div class="card"><p class="muted">Заданий пока нет</p></div>'; return; }
+
+  box.innerHTML = DB.homeworks.map(hw=>{
+    const ans = (DB.answers[hw.id]||{})[sid] || {};
+    return `
+      <div class="card">
+        <h3>📌 ${escapeHtml(hw.title)}</h3>
+        ${hw.desc?`<p class="muted">${escapeHtml(hw.desc)}</p>`:""}
+        <div style="margin:8px 0">
+          ${hw.files.map(f=>`<span class="file-chip">📎 <a href="${f.publicUrl||'#'}" target="_blank">${escapeHtml(f.name)}</a></span>`).join("")}
+          ${hw.link?`<span class="file-chip">🔗 <a href="${escapeHtml(hw.link)}" target="_blank">Материал</a></span>`:""}
+        </div>
+
+        ${ans.submitted ? renderAnswerReadOnly(ans) : renderAnswerForm(hw.id, sid)}
+      </div>
+    `;
+  }).join("");
+}
+
+function renderAnswerForm(hwId, sid){
+  return `
+    <hr style="margin:12px 0;border:none;border-top:1px solid var(--border)">
+    <label class="muted">Твой ответ:</label>
+    <input type="file" id="ansFiles_${hwId}" multiple accept="image/*,video/*" style="margin-top:6px">
+    <input type="text" id="ansLink_${hwId}" placeholder="Или ссылка на работу" style="margin-top:8px">
+    <div class="progress hidden" id="ansProg_${hwId}"><div class="progress-bar"></div></div>
+    <button class="btn btn-ok btn-sm" onclick="submitAnswer(${hwId}, ${sid})">📤 Сдать работу</button>
+  `;
+}
+
+function renderAnswerReadOnly(ans){
+  return `
+    <div class="comment">
+      ✅ Работа сдана ${new Date(ans.submittedAt).toLocaleString("ru")}
+      ${ans.files?.length ? `<div style="margin-top:6px">${ans.files.map(f=>`<span class="file-chip">📎 <a href="${f.publicUrl||'#'}" target="_blank">${escapeHtml(f.name)}</a></span>`).join("")}</div>`:""}
+      ${ans.link?`<div style="margin-top:6px"><span class="file-chip">🔗 <a href="${escapeHtml(ans.link)}" target="_blank">Ссылка</a></span></div>`:""}
+    </div>
+    ${ans.grade ? `
+      <div style="margin-top:10px">
+        <b>Оценка:</b> <span class="grade-badge grade-${ans.grade}">${ans.grade}</span>
+        ${ans.sticker?`<span style="font-size:24px;margin-left:8px">${ans.sticker}</span>`:""}
+        ${ans.comment?`<div class="comment">💬 ${escapeHtml(ans.comment)}</div>`:""}
+      </div>
+    ` : '<p class="muted" style="margin-top:8px">⏳ Ожидает проверки учителем</p>'}
+  `;
+}
+
+async function submitAnswer(hwId, sid){
+  const files = document.getElementById(`ansFiles_${hwId}`).files;
+  const link  = document.getElementById(`ansLink_${hwId}`).value.trim();
+  const prog  = document.getElementById(`ansProg_${hwId}`);
+
+  const answer = { files:[], link, submitted:true, submittedAt: Date.now() };
+
+  if(files.length){
+    prog.classList.remove("hidden");
+    try{
+      answer.files = await uploadFiles(files, `student_${sid}`, p=>{
+        prog.querySelector(".progress-bar").style.width = (p*100)+"%";
+      });
+      toast("Работа загружена на Яндекс.Диск");
+    }catch(e){
+      console.error(e); toast("Ошибка: "+e.message); prog.classList.add("hidden"); return;
+    }
+  }
+
+  DB.answers[hwId] = DB.answers[hwId] || {};
+  DB.answers[hwId][sid] = answer;
+  save();
+  toast("✅ Работа сдана!");
+  renderStudentView();
+}
+
+/* ============================================================
+   ЖУРНАЛ (учитель проверяет и ставит оценки)
+   ============================================================ */
+function renderJournal(){
+  const box = document.getElementById("journalList");
+  if(!DB.homeworks.length){ box.innerHTML = '<p class="muted">Нет заданий</p>'; return; }
+
+  box.innerHTML = DB.homeworks.map(hw=>`
+    <div class="hw-block">
+      <h4>📌 ${escapeHtml(hw.title)}</h4>
+      ${STUDENTS.map(s=>{
+        const ans = (DB.answers[hw.id]||{})[s.id];
+        return `
+          <div class="card" style="margin:8px 0;padding:12px">
+            <div class="student-row" style="border:none;padding:0">
+              <div class="student-info">
+                <div class="avatar">${s.name[0]}</div>
+                <b>${s.name}</b>
+              </div>
+              ${ans?.grade
+                ? `<span class="grade-badge grade-${ans.grade}">${ans.grade} ${ans.sticker||""}</span>`
+                : `<span class="grade-badge grade-none">${ans?"не проверено":"не сдано"}</span>`}
+            </div>
+            ${ans?.submitted ? `
+              ${ans.files?.length ? `<div style="margin-top:8px">${ans.files.map(f=>`<span class="file-chip">📎 <a href="${f.publicUrl||'#'}" target="_blank">${escapeHtml(f.name)}</a></span>`).join("")}</div>`:""}
+              ${ans.link?`<div><span class="file-chip">🔗 <a href="${escapeHtml(ans.link)}" target="_blank">Ссылка</a></span></div>`:""}
+              <div class="row" style="margin-top:10px">
+                <select id="g_${hw.id}_${s.id}" style="width:auto;margin:0">
+                  <option value="">Оценка…</option>
+                  ${[5,4,3,2].map(g=>`<option value="${g}" ${ans.grade==g?"selected":""}>${g}</option>`).join("")}
+                </select>
+                <input type="text" id="c_${hw.id}_${s.id}" placeholder="Комментарий"
+                       value="${ans.comment?escapeHtml(ans.comment):""}" style="flex:1;margin:0">
+              </div>
+              <div class="stickers" id="st_${hw.id}_${s.id}">
+                ${STICKERS.map(st=>`
+                  <span class="sticker ${ans.sticker===st?"selected":""}"
+                        onclick="pickSticker('${hw.id}','${s.id}','${st}', this)">${st}</span>
+                `).join("")}
+              </div>
+              <button class="btn btn-sm" onclick="saveGrade(${hw.id}, ${s.id})">💾 Сохранить оценку</button>
+            ` : '<p class="muted" style="margin-top:6px">Работа ещё не сдана</p>'}
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `).join("");
+}
+
+function pickSticker(hwId, sid, sticker, el){
+  const parent = el.parentElement;
+  parent.querySelectorAll(".sticker").forEach(s=>s.classList.remove("selected"));
+  el.classList.add("selected");
+  el.dataset.picked = sticker;
+}
+
+function saveGrade(hwId, sid){
+  const grade   = document.getElementById(`g_${hwId}_${sid}`).value;
+  const comment = document.getElementById(`c_${hwId}_${sid}`).value.trim();
+  const stBox   = document.getElementById(`st_${hwId}_${sid}`);
+  const picked  = stBox.querySelector(".sticker.selected")?.textContent || "";
+
+  if(!grade){ toast("Выберите оценку"); return; }
+
+  DB.answers[hwId] = DB.answers[hwId] || {};
+  DB.answers[hwId][sid] = DB.answers[hwId][sid] || {};
+  Object.assign(DB.answers[hwId][sid], { grade:+grade, comment, sticker: picked });
+
+  save();
+  toast("💾 Оценка сохранена");
+  renderJournal();
+}
+
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+function escapeHtml(s){
+  return String(s||"").replace(/[&<>"']/g, m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[m]));
+}
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+renderStudentSelect();
+renderTeacherHW();
+checkCloud();
+</script>
+</body>
+</html>
